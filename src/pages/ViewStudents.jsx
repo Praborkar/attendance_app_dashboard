@@ -268,7 +268,6 @@ const ViewStudents = () => {
                     <tr className="bg-white border-b border-slate-100">
                       <th className="py-4 px-6 font-semibold text-sm text-slate-500 uppercase tracking-wider">Student Name</th>
                       <th className="py-4 px-6 font-semibold text-sm text-slate-500 uppercase tracking-wider">Roll Number</th>
-                      <th className="py-4 px-6 font-semibold text-sm text-slate-500 uppercase tracking-wider">Student Code</th>
                       <th className="py-4 px-6 font-semibold text-sm text-slate-500 uppercase tracking-wider text-right">Actions</th>
                     </tr>
                   </thead>
@@ -285,9 +284,6 @@ const ViewStudents = () => {
                         </td>
                         <td className="py-4 px-6 font-mono text-slate-600">
                           {student.rollNumber || 'N/A'}
-                        </td>
-                        <td className="py-4 px-6 text-sm text-slate-500 font-mono">
-                          {student.studentCode || 'N/A'}
                         </td>
                         <td className="py-4 px-6 text-right">
                           <div className="flex items-center justify-end gap-2">
