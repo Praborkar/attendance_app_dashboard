@@ -141,10 +141,10 @@ const ViewStudents = () => {
       setError('');
       const formData = new FormData();
       formData.append('file', bulkFile);
-      await api.post('/admin/schools/students/bulk-upload', formData, {
+      const res = await api.post('/admin/schools/students/bulk-upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
-      setSuccess('Students uploaded successfully!');
+      setSuccess(res.data || 'Students uploaded successfully!');
       setTimeout(() => setSuccess(''), 4000);
       setShowBulkModal(false);
       setBulkFile(null);
