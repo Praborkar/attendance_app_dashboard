@@ -450,9 +450,18 @@ const ViewStudents = () => {
                 </button>
               </div>
               <h3 className="text-xl font-bold text-slate-900 mb-2">Bulk Student Upload</h3>
-              <p className="text-slate-500 text-sm mb-4">
+              <p className="text-slate-500 text-sm mb-3">
                 Upload a CSV file with columns: <span className="font-mono text-xs bg-slate-100 px-1.5 py-0.5 rounded">Student Name</span>, <span className="font-mono text-xs bg-slate-100 px-1.5 py-0.5 rounded">Roll No</span>, <span className="font-mono text-xs bg-slate-100 px-1.5 py-0.5 rounded">School Name</span>
               </p>
+
+              <a
+                href="/sample_bulk_upload.csv"
+                download="sample_bulk_upload.csv"
+                className="inline-flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline mb-4"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
+                Download Sample CSV
+              </a>
 
               <label className="block w-full cursor-pointer">
                 <div className={`border-2 border-dashed rounded-xl p-8 text-center transition-colors ${bulkFile ? 'border-emerald-300 bg-emerald-50' : 'border-slate-200 hover:border-slate-400'}`}>
