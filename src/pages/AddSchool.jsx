@@ -1,11 +1,14 @@
 import { useState } from 'react';
 import { School, MapPin, Building } from 'lucide-react';
 import api from '../api/axiosConfig';
+import TimePicker from '../components/TimePicker';
 
 const AddSchool = () => {
   const [formData, setFormData] = useState({
-    schoolName: '',
-    location: ''
+    name: '',
+    address: '',
+    startTime: '08:00',
+    endTime: '15:00'
   });
   
   const [loading, setLoading] = useState(false);
@@ -22,8 +25,8 @@ const AddSchool = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!formData.schoolName || !formData.location) {
-       setError('Please provide both the School Name and Location.');
+    if (!formData.name || !formData.address) {
+       setError('Please provide both the School Name and Address.');
        return;
     }
 
@@ -33,8 +36,10 @@ const AddSchool = () => {
 
     try {
       await api.post('/schools', formData);
-      setSuccess(`The school '${formData.schoolName}' was successfully registered in the system.`);
-      setFormData({ schoolName: '', location: '' });
+      setSuccess(`The school '${formData.name}' was successfully registered in the system.`);
+      setFormData({ name: '', address: '', startTime: '08:00', endTime: '15:00' });
+      
+      setTimeout(() => setSuccess(''), 4000);
     } catch (err) {
       setError(err.response?.data?.message || 'An error occurred while adding the school.');
     } finally {
@@ -56,7 +61,7 @@ const AddSchool = () => {
           </div>
           <div>
             <h2 className="font-bold text-slate-800 text-lg">School Information</h2>
-            <p className="text-sm text-slate-500">Provide the core details of the facility.</p>
+            <p className="text-sm text-slate-500">Provide the core details and timings of the facility.</p>
           </div>
         </div>
 
@@ -83,8 +88,8 @@ const AddSchool = () => {
                 </div>
                 <input
                   type="text"
-                  name="schoolName"
-                  value={formData.schoolName}
+                  name="name"
+                  value={formData.name}
                   onChange={handleChange}
                   className="input-field pl-10 bg-white"
                   placeholder="e.g. Lincoln High School"
@@ -100,11 +105,31 @@ const AddSchool = () => {
                 </div>
                 <input
                   type="text"
-                  name="location"
-                  value={formData.location}
+                  name="address"
+                  value={formData.address}
                   onChange={handleChange}
                   className="input-field pl-10 bg-white"
                   placeholder="e.g. 123 Main St, Springfield"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-2">Start Time</label>
+                <TimePicker
+                  name="startTime"
+                  value={formData.startTime}
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-2">End Time</label>
+                <TimePicker
+                  name="endTime"
+                  value={formData.endTime}
+                  onChange={handleChange}
                 />
               </div>
             </div>

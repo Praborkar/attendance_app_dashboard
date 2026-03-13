@@ -1,5 +1,6 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, Users, UserPlus, School, LogOut } from 'lucide-react';
+import logo from '../assets/mahavir_dashboard_logo.png';
 
 const DashboardLayout = () => {
   const navigate = useNavigate();
@@ -26,8 +27,9 @@ const DashboardLayout = () => {
       
       {/* Sidebar */}
       <aside className="w-64 bg-white border-r border-slate-200 flex flex-col shadow-sm hidden md:flex">
-        <div className="p-6 flex items-center justify-center border-b border-slate-100">
-          <h1 className="text-xl font-bold bg-gradient-to-r from-primary-600 to-primary-500 bg-clip-text text-transparent tracking-tight">
+        <div className="p-6 flex flex-col items-center justify-center border-b border-slate-100 gap-3">
+          <img src={logo} alt="Attendance App Logo" className="w-16 h-16 object-contain" />
+          <h1 className="text-xl font-bold bg-gradient-to-r from-primary-600 to-primary-500 bg-clip-text text-transparent tracking-tight text-center text-balance">
             Attendance Admin
           </h1>
         </div>

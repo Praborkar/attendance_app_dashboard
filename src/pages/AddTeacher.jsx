@@ -1,17 +1,39 @@
-import { useState } from 'react';
-import { UserPlus, Mail, Lock, User } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { UserPlus, Mail, Phone, School, User } from 'lucide-react';
 import api from '../api/axiosConfig';
 
 const AddTeacher = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    password: ''
+    mobileNo: '',
+    schoolId: ''
   });
   
+  const [schools, setSchools] = useState([]);
+  const [loadingSchools, setLoadingSchools] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+
+  useEffect(() => {
+    fetchSchools();
+  }, []);
+
+  const fetchSchools = async () => {
+    try {
+      setLoadingSchools(true);
+      const res = await api.get('/schools');
+      setSchools(res.data || []);
+      if (res.data && res.data.length > 0) {
+        setFormData(prev => ({ ...prev, schoolId: res.data[0].schoolId }));
+      }
+    } catch (err) {
+      setError('Failed to fetch schools list.');
+    } finally {
+      setLoadingSchools(false);
+    }
+  };
 
   const handleChange = (e) => {
     setFormData({
@@ -24,8 +46,8 @@ const AddTeacher = () => {
     e.preventDefault();
     
     // Basic validation
-    if (!formData.name || !formData.email || !formData.password) {
-      setError('Please fill out all fields.');
+    if (!formData.name || !formData.mobileNo || !formData.schoolId) {
+      setError('Name, Mobile Number, and School are required.');
       return;
     }
 
@@ -34,11 +56,23 @@ const AddTeacher = () => {
     setSuccess('');
 
     try {
-      await api.post('/admin/teachers', formData);
-      setSuccess(`Teacher account for ${formData.name} created successfully! They are currently unassigned.`);
-      setFormData({ name: '', email: '', password: '' });
+      // The backend expects email to be optional (null if empty),
+      // and name, mobileNo, schoolId to be present.
+      const payload = {
+        name: formData.name,
+        email: formData.email ? formData.email : null,
+        mobileNo: formData.mobileNo,
+        schoolId: formData.schoolId
+      };
+
+      await api.post('/admin/teachers', payload);
+      setSuccess(`Teacher account for ${formData.name} created and assigned successfully!`);
+      setFormData({ name: '', email: '', mobileNo: '', schoolId: schools.length > 0 ? schools[0].schoolId : '' });
+      
+      // Clear success toast after 4 seconds
+      setTimeout(() => setSuccess(''), 4000);
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to create teacher account.');
+      setError(err.response?.data?.message || 'Failed to create teacher account. Check your input.');
     } finally {
       setLoading(false);
     }
@@ -48,7 +82,7 @@ const AddTeacher = () => {
     <div className="max-w-3xl mx-auto pb-12">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Add New Teacher</h1>
-        <p className="text-slate-500 text-sm mt-1">Create a new teacher account in the system.</p>
+        <p className="text-slate-500 text-sm mt-1">Create a new teacher account and assign to a school.</p>
       </div>
 
       <div className="glass-card overflow-hidden">
@@ -78,7 +112,33 @@ const AddTeacher = () => {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">Full Name</label>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">School Assignment <span className="text-red-500">*</span></label>
+              {loadingSchools ? (
+                 <div className="h-11 bg-slate-100 rounded-xl animate-pulse"></div>
+              ) : (
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                    <School size={18} />
+                  </div>
+                  <select 
+                    name="schoolId"
+                    className="input-field pl-10 bg-white"
+                    value={formData.schoolId}
+                    onChange={handleChange}
+                  >
+                    <option value="" disabled>-- Choose a School --</option>
+                    {schools.map(s => (
+                      <option key={s.schoolId} value={s.schoolId}>
+                        {s.name} ({s.address})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">Full Name <span className="text-red-500">*</span></label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
                   <User size={18} />
@@ -95,7 +155,25 @@ const AddTeacher = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">Email Address</label>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">Mobile Number <span className="text-red-500">*</span></label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                  <Phone size={18} />
+                </div>
+                <input
+                  type="tel"
+                  name="mobileNo"
+                  value={formData.mobileNo}
+                  onChange={handleChange}
+                  className="input-field pl-10 bg-white"
+                  placeholder="10-digit mobile number"
+                  maxLength={10}
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">Email Address (Optional)</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
                   <Mail size={18} />
@@ -111,28 +189,10 @@ const AddTeacher = () => {
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">Temporary Password</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-                  <Lock size={18} />
-                </div>
-                <input
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="input-field pl-10 bg-white"
-                  placeholder="••••••••"
-                />
-              </div>
-              <p className="text-xs text-slate-500 mt-2">The teacher will use this password for their initial login.</p>
-            </div>
-
             <div className="pt-4 border-t border-slate-100">
               <button
                 type="submit"
-                disabled={loading}
+                disabled={loading || !formData.schoolId}
                 className="btn-primary w-full md:w-auto px-8 flex items-center justify-center gap-2 h-11"
               >
                 {loading ? (
