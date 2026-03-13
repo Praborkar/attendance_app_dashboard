@@ -259,13 +259,23 @@ const AssignTeachers = () => {
                         <p className="font-bold text-slate-800 truncate">{teacher.name}</p>
                         <p className="text-xs text-slate-500 truncate">{teacher.mobileNo || 'No Mobile Available'}</p>
                       </div>
-                      <button
-                        onClick={() => handleAssign(teacher)}
-                        disabled={actionLoading}
-                        className="btn-outline border-blue-200 text-blue-600 hover:bg-blue-50 py-1.5 px-3 text-sm flex items-center gap-2 shrink-0"
-                      >
-                        <UserPlus size={14} /> Add
-                      </button>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <button
+                          onClick={() => handleAssign(teacher)}
+                          disabled={actionLoading}
+                          className="btn-outline border-blue-200 text-blue-600 hover:bg-blue-50 py-1.5 px-3 text-sm flex items-center gap-2"
+                        >
+                          <UserPlus size={14} /> Add
+                        </button>
+                        <button
+                          onClick={() => openDeleteModal(teacher)}
+                          disabled={actionLoading}
+                          title="Delete teacher from system"
+                          className="p-2 rounded-lg text-red-600 hover:bg-red-50 transition-colors"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
                     </li>
                   ))}
                 </ul>
