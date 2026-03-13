@@ -270,10 +270,9 @@ const AssignTeachers = () => {
                         <button
                           onClick={() => openDeleteModal(teacher)}
                           disabled={actionLoading}
-                          title="Delete teacher from system"
-                          className="p-2 rounded-lg text-red-600 hover:bg-red-50 transition-colors"
+                          className="px-3 py-1.5 border border-red-200 rounded-lg text-red-600 hover:bg-red-50 transition-colors text-xs flex items-center gap-2"
                         >
-                          <Trash2 size={16} />
+                          Delete <Trash2 size={14} />
                         </button>
                       </div>
                     </li>
@@ -320,10 +319,9 @@ const AssignTeachers = () => {
                         <button
                           onClick={() => openTransferModal(teacher)}
                           disabled={actionLoading}
-                          title="Transfer to another school"
-                          className="p-2 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors"
+                          className="px-3 py-1.5 border border-blue-200 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors text-xs flex items-center gap-2"
                         >
-                          <ArrowRightLeft size={16} />
+                          Transfer <ArrowRightLeft size={14} />
                         </button>
                         <button
                           onClick={() => initiateUnassign(teacher)}
@@ -335,10 +333,9 @@ const AssignTeachers = () => {
                         <button
                           onClick={() => openDeleteModal(teacher)}
                           disabled={actionLoading}
-                          title="Delete teacher from system"
-                          className="p-2 rounded-lg text-red-600 hover:bg-red-50 transition-colors"
+                          className="px-3 py-1.5 border border-red-200 rounded-lg text-red-600 hover:bg-red-50 transition-colors text-xs flex items-center gap-2"
                         >
-                          <Trash2 size={16} />
+                          Delete <Trash2 size={14} />
                         </button>
                       </div>
                     </li>

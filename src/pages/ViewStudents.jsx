@@ -289,17 +289,15 @@ const ViewStudents = () => {
                           <div className="flex items-center justify-end gap-2">
                             <button
                               onClick={() => openTransferModal(student)}
-                              title="Transfer to another school"
-                              className="p-2 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors"
+                              className="px-3 py-1.5 border border-blue-200 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors text-xs flex items-center gap-2"
                             >
-                              <ArrowRightLeft size={16} />
+                              Transfer <ArrowRightLeft size={14} />
                             </button>
                             <button
                               onClick={() => openDeleteModal(student)}
-                              title="Delete student"
-                              className="p-2 rounded-lg text-red-600 hover:bg-red-50 transition-colors"
+                              className="px-3 py-1.5 border border-red-200 rounded-lg text-red-600 hover:bg-red-50 transition-colors text-xs flex items-center gap-2"
                             >
-                              <Trash2 size={16} />
+                              Delete <Trash2 size={14} />
                             </button>
                           </div>
                         </td>
