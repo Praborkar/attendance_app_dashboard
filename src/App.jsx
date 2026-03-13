@@ -6,8 +6,7 @@ import AssignTeachers from './pages/AssignTeachers';
 import ViewStudents from './pages/ViewStudents';
 import AddTeacher from './pages/AddTeacher';
 import AddSchool from './pages/AddSchool';
-import AttendanceMonitor from './pages/AttendanceMonitor';
-import MarkAttendance from './pages/MarkAttendance';
+import DailyAttendance from './pages/DailyAttendance';
 
 // Protected Route Wrapper
 const ProtectedRoute = ({ children }) => {
@@ -30,17 +29,12 @@ function App() {
             <DashboardLayout />
           </ProtectedRoute>
         }>
-          <Route index element={
-            JSON.parse(localStorage.getItem('user') || '{}').role === 'ADMIN'
-              ? <Navigate to="/dashboard" replace />
-              : <Navigate to="/mark-attendance" replace />
-          } />
+          <Route index element={<Navigate to="/dashboard" replace />} />
           <Route path="dashboard" element={<DashboardOverview />} />
-          <Route path="attendance-monitor" element={<AttendanceMonitor />} />
-          <Route path="mark-attendance" element={<MarkAttendance />} />
           <Route path="assign-teachers" element={<AssignTeachers />} />
           <Route path="view-students" element={<ViewStudents />} />
           <Route path="add-teacher" element={<AddTeacher />} />
+          <Route path="attendance" element={<DailyAttendance />} />
           <Route path="add-school" element={<AddSchool />} />
         </Route>
 

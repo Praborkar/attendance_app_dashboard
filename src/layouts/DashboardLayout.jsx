@@ -1,13 +1,12 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Users, UserPlus, School, LogOut, ClipboardCheck, BarChart3 } from 'lucide-react';
+import { LayoutDashboard, Users, UserPlus, School, LogOut, ClipboardList } from 'lucide-react';
 import logo from '../assets/mahavir_dashboard_logo.png';
 
 const DashboardLayout = () => {
   const navigate = useNavigate();
   // Decode JWT to get user info if needed, or get from localStorage
   const user = JSON.parse(localStorage.getItem('user') || '{}');
-  const userName = user.name || 'User';
-  const isAdmin = user.role === 'ADMIN';
+  const userName = user.name || 'Admin User';
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -15,15 +14,13 @@ const DashboardLayout = () => {
     navigate('/login');
   };
 
-  const navItems = isAdmin ? [
+  const navItems = [
     { name: 'Dashboard Reports', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
-    { name: 'Attendance Monitor', path: '/attendance-monitor', icon: <BarChart3 size={20} /> },
+    { name: 'Student Attendance', path: '/attendance', icon: <ClipboardList size={20} /> },
     { name: 'Assign Teachers', path: '/assign-teachers', icon: <Users size={20} /> },
     { name: 'View Students', path: '/view-students', icon: <Users size={20} /> },
     { name: 'Add Teacher', path: '/add-teacher', icon: <UserPlus size={20} /> },
     { name: 'Add School', path: '/add-school', icon: <School size={20} /> },
-  ] : [
-    { name: 'Mark Attendance', path: '/mark-attendance', icon: <ClipboardCheck size={20} /> },
   ];
 
   return (
@@ -79,7 +76,7 @@ const DashboardLayout = () => {
           <div className="flex items-center gap-3">
             <div className="text-right hidden sm:block">
               <p className="text-sm font-semibold text-slate-800">{userName}</p>
-              <p className="text-xs text-slate-500">{isAdmin ? 'Administrator' : 'Teacher'}</p>
+              <p className="text-xs text-slate-500">Administrator</p>
             </div>
             <div className="h-9 w-9 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center font-bold text-sm border border-primary-200">
               {userName.charAt(0).toUpperCase()}
