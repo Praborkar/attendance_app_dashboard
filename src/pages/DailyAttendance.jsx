@@ -46,8 +46,8 @@ const DailyAttendance = () => {
         try {
             setLoadingAttendance(true);
             setError('');
-            const res = await api.get(`/admin/schools/${schoolId}/attendance/daily`, {
-                params: { date }
+            const res = await api.get('/reports/attendance/monitoring', {
+                params: { schoolId, date }
             });
             setAttendance(res.data || []);
         } catch (err) {
