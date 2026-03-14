@@ -99,7 +99,11 @@ const DailyAttendance = () => {
 
     const formatTime = (dateTimeStr) => {
         if (!dateTimeStr) return 'N/A';
-        return new Date(dateTimeStr).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        // Ensure ISO format with 'Z' for UTC if timezone is missing
+        const dateInput = (dateTimeStr.endsWith('Z') || dateTimeStr.includes('+'))
+            ? dateTimeStr
+            : `${dateTimeStr}Z`;
+        return new Date(dateInput).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     };
 
     return (
