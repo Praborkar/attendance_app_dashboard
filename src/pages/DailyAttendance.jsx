@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { School, Search, Calendar, Fingerprint, Edit3, Clock, ChevronLeft, ChevronRight, AlertTriangle } from 'lucide-react';
+import { School, Search, Calendar, Fingerprint, Edit3, Clock, ChevronLeft, ChevronRight, AlertTriangle, Download, FileSpreadsheet } from 'lucide-react';
 import Dropdown from '../components/Dropdown';
 import api from '../api/axiosConfig';
 
@@ -13,6 +13,7 @@ const DailyAttendance = () => {
 
     const [loadingSchools, setLoadingSchools] = useState(false);
     const [loadingAttendance, setLoadingAttendance] = useState(false);
+    const [exporting, setExporting] = useState(false);
     const [error, setError] = useState('');
 
     // 1. Fetch schools on mount
@@ -64,6 +65,32 @@ const DailyAttendance = () => {
         setSelectedDate(date.toISOString().split('T')[0]);
     };
 
+    const handleExport = async (type) => {
+        try {
+            setExporting(true);
+            const endpoint = type === 'school' ? '/reports/export/school' : '/reports/export/consolidated';
+            const params = type === 'school' ? { schoolId: selectedSchool, date: selectedDate } : { date: selectedDate };
+
+            const response = await api.get(endpoint, {
+                params,
+                responseType: 'blob'
+            });
+
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            const fileName = type === 'school' ? `attendance_report_${selectedDate}.xlsx` : `attendance_consolidated_${selectedDate}.xlsx`;
+            link.setAttribute('download', fileName);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        } catch (err) {
+            setError('Failed to export Excel report.');
+        } finally {
+            setExporting(false);
+        }
+    };
+
     const filteredAttendance = attendance.filter(record => {
         const searchLower = searchQuery.toLowerCase();
         return (record.studentName || '').toLowerCase().includes(searchLower) ||
@@ -77,9 +104,31 @@ const DailyAttendance = () => {
 
     return (
         <div className="max-w-6xl mx-auto pb-12">
-            <div className="mb-8">
-                <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Student Attendance Monitoring</h1>
-                <p className="text-slate-500 text-sm mt-1">View daily attendance rosters captured via mobile app or devices.</p>
+            <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+                <div>
+                    <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Student Attendance Monitoring</h1>
+                    <p className="text-slate-500 text-sm mt-1">View daily attendance rosters captured via mobile app or devices.</p>
+                </div>
+                <div className="flex gap-3">
+                    <button
+                        onClick={() => handleExport('consolidated')}
+                        disabled={exporting}
+                        className="flex items-center gap-2 px-4 py-2.5 bg-slate-800 text-white rounded-xl font-bold text-sm hover:bg-slate-900 transition-all shadow-sm disabled:opacity-50"
+                    >
+                        <FileSpreadsheet size={18} />
+                        Consolidated Report
+                    </button>
+                    {selectedSchool && (
+                        <button
+                            onClick={() => handleExport('school')}
+                            disabled={exporting}
+                            className="flex items-center gap-2 px-4 py-2.5 bg-emerald-600 text-white rounded-xl font-bold text-sm hover:bg-emerald-700 transition-all shadow-sm disabled:opacity-50"
+                        >
+                            <Download size={18} />
+                            School Report
+                        </button>
+                    )}
+                </div>
             </div>
 
             {error && (
