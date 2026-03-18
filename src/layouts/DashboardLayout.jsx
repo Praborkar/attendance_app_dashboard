@@ -17,6 +17,7 @@ const DashboardLayout = () => {
   const navItems = [
     { name: 'Dashboard Reports', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
     { name: 'Student Attendance', path: '/attendance', icon: <ClipboardList size={20} /> },
+    { name: 'Teacher Attendance', path: '/teacher-attendance', icon: <UserPlus size={20} /> },
     { name: 'Assign Teachers', path: '/assign-teachers', icon: <Users size={20} /> },
     { name: 'View Students', path: '/view-students', icon: <Users size={20} /> },
     { name: 'Add Teacher', path: '/add-teacher', icon: <UserPlus size={20} /> },

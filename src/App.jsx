@@ -7,6 +7,7 @@ import ViewStudents from './pages/ViewStudents';
 import AddTeacher from './pages/AddTeacher';
 import AddSchool from './pages/AddSchool';
 import DailyAttendance from './pages/DailyAttendance';
+import TeacherAttendance from './pages/TeacherAttendance';
 
 // Protected Route Wrapper
 const ProtectedRoute = ({ children }) => {
@@ -35,6 +36,7 @@ function App() {
           <Route path="view-students" element={<ViewStudents />} />
           <Route path="add-teacher" element={<AddTeacher />} />
           <Route path="attendance" element={<DailyAttendance />} />
+          <Route path="teacher-attendance" element={<TeacherAttendance />} />
           <Route path="add-school" element={<AddSchool />} />
         </Route>
 
