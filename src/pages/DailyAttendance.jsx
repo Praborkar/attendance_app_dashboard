@@ -8,7 +8,12 @@ const DailyAttendance = () => {
     const [selectedSchool, setSelectedSchool] = useState('');
     const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
 
-    const [attendance, setAttendance] = useState([]);
+    const [attendance, setAttendance] = useState({ 
+        totalStudents: 0, 
+        presentCount: 0, 
+        absentCount: 0, 
+        records: [] 
+    });
     const [searchQuery, setSearchQuery] = useState('');
 
     const [loadingSchools, setLoadingSchools] = useState(false);
@@ -50,10 +55,10 @@ const DailyAttendance = () => {
             const res = await api.get('/reports/attendance/monitoring', {
                 params: { schoolId, date }
             });
-            setAttendance(res.data || []);
+            setAttendance(res.data || { totalStudents: 0, presentCount: 0, absentCount: 0, records: [] });
         } catch (err) {
             setError('Failed to fetch attendance for this date.');
-            setAttendance([]);
+            setAttendance({ totalStudents: 0, presentCount: 0, absentCount: 0, records: [] });
         } finally {
             setLoadingAttendance(false);
         }
@@ -91,7 +96,7 @@ const DailyAttendance = () => {
         }
     };
 
-    const filteredAttendance = attendance.filter(record => {
+    const filteredAttendance = (attendance.records || []).filter(record => {
         const searchLower = searchQuery.toLowerCase();
         return (record.studentName || '').toLowerCase().includes(searchLower) ||
             String(record.rollNumber || '').includes(searchQuery);
@@ -204,6 +209,39 @@ const DailyAttendance = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Summary Statistics Bar */}
+            {!loadingAttendance && attendance.totalStudents > 0 && (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                    <div className="glass-card p-5 border-l-4 border-l-slate-400 flex items-center justify-between">
+                        <div>
+                            <p className="text-slate-500 text-xs font-bold uppercase tracking-wider mb-1">Total Students</p>
+                            <p className="text-2xl font-black text-slate-800">{attendance.totalStudents}</p>
+                        </div>
+                        <div className="p-3 bg-slate-100 rounded-xl text-slate-500">
+                            <School size={24} />
+                        </div>
+                    </div>
+                    <div className="glass-card p-5 border-l-4 border-l-emerald-500 flex items-center justify-between">
+                        <div>
+                            <p className="text-emerald-600 text-xs font-bold uppercase tracking-wider mb-1">Total Present</p>
+                            <p className="text-2xl font-black text-emerald-700">{attendance.presentCount}</p>
+                        </div>
+                        <div className="p-3 bg-emerald-50 rounded-xl text-emerald-600">
+                            <Fingerprint size={24} />
+                        </div>
+                    </div>
+                    <div className="glass-card p-5 border-l-4 border-l-red-500 flex items-center justify-between">
+                        <div>
+                            <p className="text-red-600 text-xs font-bold uppercase tracking-wider mb-1">Total Absent</p>
+                            <p className="text-2xl font-black text-red-700">{attendance.absentCount}</p>
+                        </div>
+                        <div className="p-3 bg-red-50 rounded-xl text-red-600">
+                            <Calendar size={24} />
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Roster Table */}
             <div className="glass-card overflow-hidden">
