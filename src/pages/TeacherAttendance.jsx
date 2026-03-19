@@ -202,7 +202,7 @@ const TeacherAttendance = () => {
                         Teacher Attendance for {new Date(selectedDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
                     </h2>
                     <span className="bg-primary-100 text-primary-700 text-xs font-bold px-3 py-1 rounded-full">
-                        {attendance.filter(r => r.status === 'PRESENT').length} Present
+                        {attendance.presentCount} Present
                     </span>
                 </div>
 
