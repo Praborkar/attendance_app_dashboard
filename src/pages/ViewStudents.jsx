@@ -133,7 +133,12 @@ const ViewStudents = () => {
   // ============ BULK UPLOAD ============
   const handleBulkUpload = async () => {
     if (!bulkFile) {
-      setError('Please select a CSV file.');
+      setError('Please select a CSV or Excel file.');
+      return;
+    }
+    const fileName = bulkFile.name.toLowerCase();
+    if (!fileName.endsWith('.csv') && !fileName.endsWith('.xlsx') && !fileName.endsWith('.xls')) {
+      setError('Invalid file format. Please upload a .csv or .xlsx file.');
       return;
     }
     try {
@@ -268,6 +273,9 @@ const ViewStudents = () => {
                     <tr className="bg-white border-b border-slate-100">
                       <th className="py-4 px-6 font-semibold text-sm text-slate-500 uppercase tracking-wider">Student Name</th>
                       <th className="py-4 px-6 font-semibold text-sm text-slate-500 uppercase tracking-wider">Roll Number</th>
+                      <th className="py-4 px-6 font-semibold text-sm text-slate-500 uppercase tracking-wider">Gender</th>
+                      <th className="py-4 px-6 font-semibold text-sm text-slate-500 uppercase tracking-wider">DOB</th>
+                      <th className="py-4 px-6 font-semibold text-sm text-slate-500 uppercase tracking-wider">Age</th>
                       <th className="py-4 px-6 font-semibold text-sm text-slate-500 uppercase tracking-wider text-right">Actions</th>
                     </tr>
                   </thead>
@@ -284,6 +292,21 @@ const ViewStudents = () => {
                         </td>
                         <td className="py-4 px-6 font-mono text-slate-600">
                           {student.rollNumber || 'N/A'}
+                        </td>
+                        <td className="py-4 px-6">
+                           <span className={`px-2 py-1 rounded-md text-xs font-semibold ${
+                             student.gender === 'MALE' ? 'bg-blue-50 text-blue-600' : 
+                             student.gender === 'FEMALE' ? 'bg-pink-50 text-pink-600' : 
+                             'bg-slate-50 text-slate-600'
+                           }`}>
+                             {student.gender || 'N/A'}
+                           </span>
+                        </td>
+                        <td className="py-4 px-6 text-slate-600 text-sm">
+                          {student.dob ? new Date(student.dob).toLocaleDateString('en-GB').split('/').join('-') : 'N/A'}
+                        </td>
+                        <td className="py-4 px-6 text-slate-600 text-sm">
+                          {student.age ?? 'N/A'}
                         </td>
                         <td className="py-4 px-6 text-right">
                           <div className="flex items-center justify-end gap-2">
@@ -445,7 +468,7 @@ const ViewStudents = () => {
               </div>
               <h3 className="text-xl font-bold text-slate-900 mb-2">Bulk Student Upload</h3>
               <p className="text-slate-500 text-sm mb-3">
-                Upload a CSV file with columns: <span className="font-mono text-xs bg-slate-100 px-1.5 py-0.5 rounded">Student Name</span>, <span className="font-mono text-xs bg-slate-100 px-1.5 py-0.5 rounded">Roll No</span>, <span className="font-mono text-xs bg-slate-100 px-1.5 py-0.5 rounded">School Name</span>
+                Upload a CSV or Excel file with columns: <span className="font-mono text-xs bg-slate-100 px-1.5 py-0.5 rounded">Student Name</span>, <span className="font-mono text-xs bg-slate-100 px-1.5 py-0.5 rounded">Roll No</span>, <span className="font-mono text-xs bg-slate-100 px-1.5 py-0.5 rounded">School Name</span>, <span className="font-mono text-xs bg-slate-100 px-1.5 py-0.5 rounded">Gender</span>, <span className="font-mono text-xs bg-slate-100 px-1.5 py-0.5 rounded">DOB</span>
               </p>
 
               <a
@@ -475,7 +498,7 @@ const ViewStudents = () => {
                 </div>
                 <input
                   type="file"
-                  accept=".csv"
+                  accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                   className="hidden"
                   onChange={(e) => setBulkFile(e.target.files[0])}
                 />
