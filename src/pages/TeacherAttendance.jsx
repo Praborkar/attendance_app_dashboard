@@ -174,49 +174,25 @@ const TeacherAttendance = () => {
                     </div>
                 </div>
             </div>
-            {/* Summary Statistics Bar */}
-            {!loadingAttendance && attendance.totalTeachers > 0 && (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                    <div className="glass-card p-5 border-l-4 border-l-slate-400 flex items-center justify-between">
-                        <div>
-                            <p className="text-slate-500 text-xs font-bold uppercase tracking-wider mb-1">Total Teachers</p>
-                            <p className="text-2xl font-black text-slate-800">{attendance.totalTeachers}</p>
-                        </div>
-                        <div className="p-3 bg-slate-100 rounded-xl text-slate-500">
-                            <School size={24} />
-                        </div>
-                    </div>
-                    <div className="glass-card p-5 border-l-4 border-l-emerald-500 flex items-center justify-between">
-                        <div>
-                            <p className="text-emerald-600 text-xs font-bold uppercase tracking-wider mb-1">Total Present</p>
-                            <p className="text-2xl font-black text-emerald-700">{attendance.presentCount}</p>
-                        </div>
-                        <div className="p-3 bg-emerald-50 rounded-xl text-emerald-600">
-                            <Fingerprint size={24} />
-                        </div>
-                    </div>
-                    <div className="glass-card p-5 border-l-4 border-l-red-500 flex items-center justify-between">
-                        <div>
-                            <p className="text-red-600 text-xs font-bold uppercase tracking-wider mb-1">Total Absent</p>
-                            <p className="text-2xl font-black text-red-700">{attendance.absentCount}</p>
-                        </div>
-                        <div className="p-3 bg-red-50 rounded-xl text-red-600">
-                            <Calendar size={24} />
-                        </div>
-                    </div>
-                </div>
-            )}
 
             {/* Roster Table */}
             <div className="glass-card overflow-hidden">
-                <div className="bg-slate-50 border-b border-slate-200 px-6 py-4 flex items-center justify-between">
+                <div className="bg-slate-50 border-b border-slate-200 px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <h2 className="font-bold text-slate-800 flex items-center gap-2">
                         <Clock size={18} className="text-primary-600" />
                         Teacher Attendance for {new Date(selectedDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
                     </h2>
-                    <span className="bg-primary-100 text-primary-700 text-xs font-bold px-3 py-1 rounded-full">
-                        {attendance.presentCount} Present
-                    </span>
+                    <div className="flex flex-wrap items-center gap-2">
+                        <span className="bg-slate-200 text-slate-700 text-[10px] uppercase tracking-tighter font-black px-2.5 py-1 rounded-lg border border-slate-300">
+                            Total: {attendance.totalTeachers}
+                        </span>
+                        <span className="bg-emerald-100 text-emerald-700 text-[10px] uppercase tracking-tighter font-black px-2.5 py-1 rounded-lg border border-emerald-200">
+                            Present: {attendance.presentCount}
+                        </span>
+                        <span className="bg-red-100 text-red-700 text-[10px] uppercase tracking-tighter font-black px-2.5 py-1 rounded-lg border border-red-200">
+                            Absent: {attendance.absentCount}
+                        </span>
+                    </div>
                 </div>
 
                 <div className="p-0">
