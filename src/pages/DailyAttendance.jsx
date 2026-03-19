@@ -55,7 +55,20 @@ const DailyAttendance = () => {
             const res = await api.get('/reports/attendance/monitoring', {
                 params: { schoolId, date }
             });
-            setAttendance(res.data || { totalStudents: 0, presentCount: 0, absentCount: 0, records: [] });
+            
+            // Backwards compatibility: Handle both old Array and new DTO responses
+            if (Array.isArray(res.data)) {
+                const records = res.data;
+                const presentCount = records.filter(r => r.status === 'PRESENT').length;
+                setAttendance({
+                    totalStudents: records.length,
+                    presentCount: presentCount,
+                    absentCount: records.length - presentCount,
+                    records: records
+                });
+            } else {
+                setAttendance(res.data || { totalStudents: 0, presentCount: 0, absentCount: 0, records: [] });
+            }
         } catch (err) {
             setError('Failed to fetch attendance for this date.');
             setAttendance({ totalStudents: 0, presentCount: 0, absentCount: 0, records: [] });
