@@ -481,7 +481,7 @@ const ViewStudents = () => {
                   <input
                     type="text"
                     className="input-field bg-white w-full"
-                    placeholder="e.g. Grade 10"
+                    placeholder="e.g: Level 1"
                     value={editForm.level}
                     onChange={(e) => setEditForm({ ...editForm, level: e.target.value })}
                   />
