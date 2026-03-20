@@ -19,7 +19,6 @@ const ViewStudents = () => {
   const [showTransferModal, setShowTransferModal] = useState(false);
   const [studentToTransfer, setStudentToTransfer] = useState(null);
   const [transferSchoolId, setTransferSchoolId] = useState('');
-  const [transferRollNumber, setTransferRollNumber] = useState('');
   const [transferLoading, setTransferLoading] = useState(false);
 
   // Delete Modal State
@@ -81,21 +80,19 @@ const ViewStudents = () => {
   const openTransferModal = (student) => {
     setStudentToTransfer(student);
     setTransferSchoolId('');
-    setTransferRollNumber('');
     setShowTransferModal(true);
   };
 
   const handleTransfer = async () => {
-    if (!transferSchoolId || !transferRollNumber) {
-      setError('Please select a school and enter a new roll number.');
+    if (!transferSchoolId) {
+      setError('Please select a school.');
       return;
     }
     try {
       setTransferLoading(true);
       setError('');
       await api.put(`/admin/schools/students/${studentToTransfer.studentId}/transfer`, {
-        newSchoolId: transferSchoolId,
-        newRollNumber: parseInt(transferRollNumber)
+        newSchoolId: transferSchoolId
       });
       setSuccess(`${studentToTransfer.name} transferred successfully!`);
       setTimeout(() => setSuccess(''), 4000);
@@ -165,9 +162,11 @@ const ViewStudents = () => {
     const searchLower = searchQuery.toLowerCase();
     const safeName = student.name || '';
     const safeRoll = student.rollNumber || '';
+    const safeLevel = student.level || '';
 
     return safeName.toLowerCase().includes(searchLower) ||
-      String(safeRoll).toLowerCase().includes(searchLower);
+      String(safeRoll).toLowerCase().includes(searchLower) ||
+      safeLevel.toLowerCase().includes(searchLower);
   });
 
   return (
@@ -272,6 +271,7 @@ const ViewStudents = () => {
                   <thead>
                     <tr className="bg-white border-b border-slate-100">
                       <th className="py-4 px-6 font-semibold text-sm text-slate-500 uppercase tracking-wider">Student Name</th>
+                      <th className="py-4 px-6 font-semibold text-sm text-slate-500 uppercase tracking-wider">Level</th>
                       <th className="py-4 px-6 font-semibold text-sm text-slate-500 uppercase tracking-wider">Roll Number</th>
                       <th className="py-4 px-6 font-semibold text-sm text-slate-500 uppercase tracking-wider">Gender</th>
                       <th className="py-4 px-6 font-semibold text-sm text-slate-500 uppercase tracking-wider">DOB</th>
@@ -289,6 +289,11 @@ const ViewStudents = () => {
                             </div>
                             <span className="font-medium text-slate-800">{student.name || 'Unknown'}</span>
                           </div>
+                        </td>
+                        <td className="py-4 px-6 font-semibold text-slate-600 text-xs">
+                           <span className="bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+                             {student.level || 'N/A'}
+                           </span>
                         </td>
                         <td className="py-4 px-6 font-mono text-slate-600">
                           {student.rollNumber || 'N/A'}
@@ -377,16 +382,6 @@ const ViewStudents = () => {
                     ))}
                   </select>
                 </div>
-                <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">New Roll Number</label>
-                  <input
-                    type="number"
-                    className="input-field bg-white w-full"
-                    placeholder="Enter new roll number"
-                    value={transferRollNumber}
-                    onChange={(e) => setTransferRollNumber(e.target.value)}
-                  />
-                </div>
               </div>
             </div>
             <div className="bg-slate-50 px-6 py-4 flex items-center justify-end gap-3 border-t border-slate-100">
@@ -399,7 +394,7 @@ const ViewStudents = () => {
               </button>
               <button
                 onClick={handleTransfer}
-                disabled={transferLoading || !transferSchoolId || !transferRollNumber}
+                disabled={transferLoading || !transferSchoolId}
                 className="px-6 py-2 font-medium text-white bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-600/20 rounded-xl transition-all text-sm disabled:opacity-50"
               >
                 {transferLoading ? 'Transferring...' : 'Transfer Student'}
@@ -468,7 +463,7 @@ const ViewStudents = () => {
               </div>
               <h3 className="text-xl font-bold text-slate-900 mb-2">Bulk Student Upload</h3>
               <p className="text-slate-500 text-sm mb-3">
-                Upload a CSV or Excel file with columns: <span className="font-mono text-xs bg-slate-100 px-1.5 py-0.5 rounded">Student Name</span>, <span className="font-mono text-xs bg-slate-100 px-1.5 py-0.5 rounded">Roll No</span>, <span className="font-mono text-xs bg-slate-100 px-1.5 py-0.5 rounded">School Name</span>, <span className="font-mono text-xs bg-slate-100 px-1.5 py-0.5 rounded">Gender</span>, <span className="font-mono text-xs bg-slate-100 px-1.5 py-0.5 rounded">DOB</span>
+                Upload a CSV or Excel file with columns: <span className="font-mono text-xs bg-slate-100 px-1.5 py-0.5 rounded">Student Name</span>, <span className="font-mono text-xs bg-slate-100 px-1.5 py-0.5 rounded">Level</span>, <span className="font-mono text-xs bg-slate-100 px-1.5 py-0.5 rounded">School Name</span>, <span className="font-mono text-xs bg-slate-100 px-1.5 py-0.5 rounded">Gender</span>, <span className="font-mono text-xs bg-slate-100 px-1.5 py-0.5 rounded">DOB</span>
               </p>
 
               <a
