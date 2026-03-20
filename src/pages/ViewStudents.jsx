@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { School, UserCircle2, Search, ArrowRightLeft, Trash2, Upload, X, AlertTriangle } from 'lucide-react';
+import { School, UserCircle2, Search, ArrowRightLeft, Trash2, Upload, X, AlertTriangle, Pencil } from 'lucide-react';
 import Dropdown from '../components/Dropdown';
 import api from '../api/axiosConfig';
 
@@ -20,6 +20,12 @@ const ViewStudents = () => {
   const [studentToTransfer, setStudentToTransfer] = useState(null);
   const [transferSchoolId, setTransferSchoolId] = useState('');
   const [transferLoading, setTransferLoading] = useState(false);
+
+  // Edit Modal State
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [studentToEdit, setStudentToEdit] = useState(null);
+  const [editForm, setEditForm] = useState({ name: '', gender: '', dob: '', level: '' });
+  const [editLoading, setEditLoading] = useState(false);
 
   // Delete Modal State
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -102,6 +108,34 @@ const ViewStudents = () => {
       setError(err.response?.data?.message || err.response?.data || 'Failed to transfer student.');
     } finally {
       setTransferLoading(false);
+    }
+  };
+
+  // ============ EDIT Student ============
+  const openEditModal = (student) => {
+    setStudentToEdit(student);
+    setEditForm({
+      name: student.name || '',
+      gender: student.gender || '',
+      dob: student.dob || '',
+      level: student.level || ''
+    });
+    setShowEditModal(true);
+  };
+
+  const handleUpdateStudent = async () => {
+    try {
+      setEditLoading(true);
+      setError('');
+      await api.put(`/admin/schools/students/${studentToEdit.studentId}`, editForm);
+      setSuccess(`${editForm.name} updated successfully!`);
+      setTimeout(() => setSuccess(''), 4000);
+      setShowEditModal(false);
+      fetchStudents(selectedSchool);
+    } catch (err) {
+      setError(err.response?.data?.message || err.response?.data || 'Failed to update student.');
+    } finally {
+      setEditLoading(false);
     }
   };
 
@@ -316,6 +350,12 @@ const ViewStudents = () => {
                         <td className="py-4 px-6 text-right">
                           <div className="flex items-center justify-end gap-2">
                             <button
+                              onClick={() => openEditModal(student)}
+                              className="px-3 py-1.5 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors text-xs flex items-center gap-2"
+                            >
+                              Edit <Pencil size={14} />
+                            </button>
+                            <button
                               onClick={() => openTransferModal(student)}
                               className="px-3 py-1.5 border border-blue-200 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors text-xs flex items-center gap-2"
                             >
@@ -398,6 +438,100 @@ const ViewStudents = () => {
                 className="px-6 py-2 font-medium text-white bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-600/20 rounded-xl transition-all text-sm disabled:opacity-50"
               >
                 {transferLoading ? 'Transferring...' : 'Transfer Student'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ============ EDIT MODAL ============ */}
+      {showEditModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="p-6">
+              <div className="flex items-start justify-between mb-4">
+                <div className="h-12 w-12 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center shrink-0">
+                  <Pencil size={24} />
+                </div>
+                <button
+                  onClick={() => setShowEditModal(false)}
+                  className="text-slate-400 hover:text-slate-600 hover:bg-slate-100 p-1.5 rounded-lg transition-colors"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-2">Edit Student Details</h3>
+              <p className="text-slate-500 text-sm mb-6">
+                Update information for <span className="font-semibold text-slate-700">{studentToEdit?.name}</span>. Roll No and Age are system-managed.
+              </p>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">Full Name</label>
+                  <input
+                    type="text"
+                    className="input-field bg-white w-full"
+                    placeholder="Enter student name"
+                    value={editForm.name}
+                    onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">Level</label>
+                  <input
+                    type="text"
+                    className="input-field bg-white w-full"
+                    placeholder="e.g. Grade 10"
+                    value={editForm.level}
+                    onChange={(e) => setEditForm({ ...editForm, level: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">Gender</label>
+                  <select
+                    className="input-field bg-white w-full"
+                    value={editForm.gender}
+                    onChange={(e) => setEditForm({ ...editForm, gender: e.target.value })}
+                  >
+                    <option value="">Select Gender</option>
+                    <option value="MALE">Male</option>
+                    <option value="FEMALE">Female</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">Date of Birth</label>
+                  <input
+                    type="date"
+                    className="input-field bg-white w-full"
+                    value={editForm.dob}
+                    onChange={(e) => setEditForm({ ...editForm, dob: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">Roll Number (Read-only)</label>
+                  <input
+                    type="text"
+                    className="input-field bg-slate-50 w-full cursor-not-allowed"
+                    value={studentToEdit?.rollNumber || ''}
+                    disabled
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="bg-slate-50 px-6 py-4 flex items-center justify-end gap-3 border-t border-slate-100">
+              <button
+                onClick={() => setShowEditModal(false)}
+                disabled={editLoading}
+                className="px-4 py-2 font-medium text-slate-600 hover:bg-slate-200 rounded-xl transition-colors text-sm"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleUpdateStudent}
+                disabled={editLoading}
+                className="px-6 py-2 font-medium text-white bg-slate-800 hover:bg-slate-900 shadow-md shadow-slate-800/20 rounded-xl transition-all text-sm disabled:opacity-50"
+              >
+                {editLoading ? 'Updating...' : 'Save Changes'}
               </button>
             </div>
           </div>
