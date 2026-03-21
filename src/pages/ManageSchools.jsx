@@ -103,7 +103,7 @@ const ManageSchools = () => {
                 placeholder="Search by school name or address..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="input-field pl-10 py-2.5 bg-white border-slate-200 focus:border-primary-400 focus:ring-4 focus:ring-primary-400/10 transition-all rounded-xl w-full text-sm"
+                className="input-field pl-10 py-2.5 bg-white border-slate-200 focus:border-primary-400 focus:ring-4 focus:ring-primary-400/10 transition-all rounded-xl w-full text-sm font-medium"
               />
             </div>
             <button
@@ -145,16 +145,16 @@ const ManageSchools = () => {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-white border-b border-slate-100">
+              <tr className="bg-white border-b border-slate-100 italic font-medium">
                 <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">School Details</th>
                 <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Teachers</th>
                 <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Students</th>
                 <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Start Date</th>
-                <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Timing</th>
+                <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider text-center">Timing</th>
                 <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 font-medium text-sm">
               {loading ? (
                 <tr>
                   <td colSpan="6" className="px-6 py-12 text-center text-slate-400">
@@ -180,7 +180,10 @@ const ManageSchools = () => {
                     <td className="px-6 py-4">
                       <div className="flex flex-col">
                         <span className="font-bold text-slate-800 text-sm group-hover:text-primary-600 transition-colors uppercase tracking-tight">{school.name}</span>
-                        <div className="flex items-center gap-1.5 text-[11px] text-slate-500 mt-1">
+                        <div 
+                          className="flex items-center gap-1.5 text-[11px] text-slate-500 mt-1 cursor-help" 
+                          title={school.address}
+                        >
                           <MapPin size={12} className="shrink-0" />
                           <span className="truncate max-w-[200px]">{school.address}</span>
                         </div>
@@ -199,13 +202,13 @@ const ManageSchools = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-2 text-xs text-slate-600 font-medium">
+                      <div className="flex items-center gap-2 text-xs text-slate-600 font-bold italic">
                         <Calendar size={14} className="text-slate-400" />
                         {school.startDate ? school.startDate.split('-').reverse().join('-') : 'N/A'}
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-xs text-slate-600 font-medium whitespace-nowrap">
-                       <div className="flex items-center gap-2">
+                    <td className="px-6 py-4 text-xs text-slate-600 font-bold whitespace-nowrap text-center">
+                       <div className="flex items-center justify-center gap-2">
                           <Clock size={14} className="text-slate-400" />
                           <span>{school.startTime} - {school.endTime}</span>
                        </div>
@@ -214,17 +217,15 @@ const ManageSchools = () => {
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => handleEdit(school)}
-                          className="p-2 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-all"
-                          title="Edit School"
+                          className="px-3 py-1.5 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-100 transition-all text-xs flex items-center gap-2 font-bold"
                         >
-                          <Pencil size={18} />
+                          Edit <Pencil size={14} />
                         </button>
                         <button
                           onClick={() => handleDeleteClick(school)}
-                          className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
-                          title="Delete School"
+                          className="px-3 py-1.5 border border-red-200 rounded-lg text-red-600 hover:bg-red-50 transition-all text-xs flex items-center gap-2 font-bold"
                         >
-                          <Trash2 size={18} />
+                          Delete <Trash2 size={14} />
                         </button>
                       </div>
                     </td>
