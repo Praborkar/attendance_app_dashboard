@@ -300,12 +300,21 @@ const ViewStudents = () => {
             </div>
             <input
               type="text"
-              className="input-field !pl-10 bg-white"
+              className="input-field !pl-10 !pr-10 bg-white"
               placeholder="Search by name or roll number..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               disabled={!selectedSchool || students.length === 0}
             />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute inset-y-0 right-3 my-auto text-slate-400 hover:text-slate-600 transition-colors"
+                title="Clear search"
+              >
+                <X size={18} />
+              </button>
+            )}
           </div>
         </div>
       </div>

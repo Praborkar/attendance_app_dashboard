@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { School, Search, Calendar, Fingerprint, Edit3, Clock, ChevronLeft, ChevronRight, AlertTriangle, UserCheck, Filter } from 'lucide-react';
+import { School, Search, Calendar, Fingerprint, Edit3, Clock, ChevronLeft, ChevronRight, AlertTriangle, UserCheck, Filter, X } from 'lucide-react';
 import Dropdown from '../components/Dropdown';
 import api from '../api/axiosConfig';
 
@@ -212,11 +212,20 @@ const TeacherAttendance = () => {
                         <Search size={18} className="absolute inset-y-0 left-3 my-auto text-slate-400 pointer-events-none" />
                         <input
                             type="text"
-                            className="input-field !pl-10 bg-white"
+                            className="input-field !pl-10 !pr-10 bg-white"
                             placeholder="Search by name..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
+                        {searchQuery && (
+                            <button
+                                onClick={() => setSearchQuery('')}
+                                className="absolute inset-y-0 right-3 my-auto text-slate-400 hover:text-slate-600 transition-colors"
+                                title="Clear search"
+                            >
+                                <X size={18} />
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>

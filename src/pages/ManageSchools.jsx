@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { School, Building, Plus, Pencil, Trash2, Search, MapPin, Calendar, Clock, AlertTriangle, Users, GraduationCap } from 'lucide-react';
+import { School, Building, Plus, Pencil, Trash2, Search, MapPin, Calendar, Clock, AlertTriangle, Users, GraduationCap, X } from 'lucide-react';
 import api from '../api/axiosConfig';
 import AddSchoolModal from '../components/AddSchoolModal';
 
@@ -120,8 +120,17 @@ const ManageSchools = () => {
                 placeholder="Search by school name or address..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 text-sm font-medium transition-all bg-white"
+                className="w-full pl-10 pr-10 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 text-sm font-medium transition-all bg-white"
               />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute inset-y-0 right-3 my-auto text-slate-400 hover:text-slate-600 transition-colors"
+                  title="Clear search"
+                >
+                  <X size={18} />
+                </button>
+              )}
             </div>
             <button
               onClick={handleAddNew}
