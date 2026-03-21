@@ -20,6 +20,17 @@ const AddTeacher = () => {
     fetchSchools();
   }, []);
 
+  // Auto-dismiss alerts
+  useEffect(() => {
+    if (error || success) {
+      const timer = setTimeout(() => {
+        setError('');
+        setSuccess('');
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [error, success]);
+
   const fetchSchools = async () => {
     try {
       setLoadingSchools(true);
@@ -68,9 +79,6 @@ const AddTeacher = () => {
       await api.post('/admin/teachers', payload);
       setSuccess(`Teacher account for ${formData.name} created and assigned successfully!`);
       setFormData({ name: '', email: '', mobileNo: '', schoolId: schools.length > 0 ? schools[0].schoolId : '' });
-      
-      // Clear success toast after 4 seconds
-      setTimeout(() => setSuccess(''), 4000);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to create teacher account. Check your input.');
     } finally {

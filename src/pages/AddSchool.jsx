@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { School, MapPin, Building } from 'lucide-react';
 import api from '../api/axiosConfig';
 import TimePicker from '../components/TimePicker';
@@ -14,6 +14,17 @@ const AddSchool = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+
+  // Auto-dismiss alerts
+  useEffect(() => {
+    if (error || success) {
+      const timer = setTimeout(() => {
+        setError('');
+        setSuccess('');
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [error, success]);
 
   const handleChange = (e) => {
     setFormData({
@@ -38,8 +49,6 @@ const AddSchool = () => {
       await api.post('/schools', formData);
       setSuccess(`The school '${formData.name}' was successfully registered in the system.`);
       setFormData({ name: '', address: '', startTime: '08:00', endTime: '15:00' });
-      
-      setTimeout(() => setSuccess(''), 4000);
     } catch (err) {
       setError(err.response?.data?.message || 'An error occurred while adding the school.');
     } finally {

@@ -15,6 +15,16 @@ const DashboardOverview = () => {
     fetchStats();
   }, []);
 
+  // Auto-dismiss alerts
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        setError('');
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
+
   const fetchStats = async () => {
     try {
       setLoading(true);

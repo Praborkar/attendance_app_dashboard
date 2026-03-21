@@ -25,6 +25,16 @@ const TeacherAttendance = () => {
         fetchSchools();
     }, []);
 
+    // Auto-dismiss alerts
+    useEffect(() => {
+        if (error) {
+            const timer = setTimeout(() => {
+                setError('');
+            }, 5000);
+            return () => clearTimeout(timer);
+        }
+    }, [error]);
+
     // 2. Fetch attendance when school or date changes
     useEffect(() => {
         if (selectedSchool && selectedDate) {

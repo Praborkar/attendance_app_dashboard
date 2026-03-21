@@ -42,6 +42,17 @@ const ViewStudents = () => {
     fetchSchools();
   }, []);
 
+  // Auto-dismiss alerts
+  useEffect(() => {
+    if (error || success) {
+      const timer = setTimeout(() => {
+        setError('');
+        setSuccess('');
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [error, success]);
+
   // 2. Fetch students when selected school changes
   useEffect(() => {
     if (selectedSchool) {
@@ -101,7 +112,6 @@ const ViewStudents = () => {
         newSchoolId: transferSchoolId
       });
       setSuccess(`${studentToTransfer.name} transferred successfully!`);
-      setTimeout(() => setSuccess(''), 4000);
       setShowTransferModal(false);
       fetchStudents(selectedSchool);
     } catch (err) {
@@ -129,7 +139,6 @@ const ViewStudents = () => {
       setError('');
       await api.put(`/admin/schools/students/${studentToEdit.studentId}`, editForm);
       setSuccess(`${editForm.name} updated successfully!`);
-      setTimeout(() => setSuccess(''), 4000);
       setShowEditModal(false);
       fetchStudents(selectedSchool);
     } catch (err) {
@@ -151,7 +160,6 @@ const ViewStudents = () => {
       setError('');
       await api.delete(`/admin/schools/students/${studentToDelete.studentId}`);
       setSuccess(`${studentToDelete.name} removed successfully.`);
-      setTimeout(() => setSuccess(''), 4000);
       setShowDeleteModal(false);
       fetchStudents(selectedSchool);
     } catch (err) {
@@ -181,7 +189,6 @@ const ViewStudents = () => {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       setSuccess(res.data || 'Students uploaded successfully!');
-      setTimeout(() => setSuccess(''), 4000);
       setShowBulkModal(false);
       setBulkFile(null);
       if (selectedSchool) fetchStudents(selectedSchool);

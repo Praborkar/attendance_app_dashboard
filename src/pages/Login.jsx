@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, ShieldCheck, Mail, Lock, AlertTriangle, X } from 'lucide-react';
 import logo from '../assets/mahavir_dashboard_logo.png';
@@ -19,6 +19,18 @@ const Login = () => {
   const [forgotError, setForgotError] = useState('');
   
   const navigate = useNavigate();
+
+  // Auto-dismiss alerts
+  useEffect(() => {
+    if (error || forgotMessage || forgotError) {
+      const timer = setTimeout(() => {
+        setError('');
+        setForgotMessage('');
+        setForgotError('');
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [error, forgotMessage, forgotError]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -86,11 +98,7 @@ const Login = () => {
     try {
       const response = await api.post('/auth/forgot-password', { email: forgotEmail });
       setForgotMessage(response.data?.message || 'Password reset instructions have been sent to your email.');
-      setTimeout(() => {
-        setShowForgotModal(false);
-        setForgotMessage('');
-        setForgotEmail('');
-      }, 5000);
+      setForgotEmail('');
     } catch (err) {
       setForgotError(err.response?.data?.message || 'Failed to send reset link. Please verify your email.');
     } finally {

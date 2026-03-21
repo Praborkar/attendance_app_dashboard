@@ -37,6 +37,17 @@ const AssignTeachers = () => {
     fetchSchools();
   }, []);
 
+  // Auto-dismiss alerts
+  useEffect(() => {
+    if (error || success) {
+      const timer = setTimeout(() => {
+        setError('');
+        setSuccess('');
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [error, success]);
+
   // 2. Fetch teachers when selected school changes
   useEffect(() => {
     if (selectedSchool) {
@@ -96,7 +107,6 @@ const AssignTeachers = () => {
       const schoolName = schools.find(s => s.schoolId === selectedSchool)?.name || 'School';
       setSuccess(`Assigned ${teacher.name} to ${schoolName}`);
 
-      setTimeout(() => setSuccess(''), 4000);
       fetchTeachers(selectedSchool);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to assign teacher.');
@@ -123,7 +133,6 @@ const AssignTeachers = () => {
       const schoolName = schools.find(s => s.schoolId === selectedSchool)?.name || 'School';
       setSuccess(`Removed ${teacherToUnassign.name} from ${schoolName}`);
 
-      setTimeout(() => setSuccess(''), 4000);
       fetchTeachers(selectedSchool);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to remove teacher.');
@@ -153,7 +162,6 @@ const AssignTeachers = () => {
         newSchoolId: transferSchoolId
       });
       setSuccess(`${teacherToTransfer.name} transferred successfully!`);
-      setTimeout(() => setSuccess(''), 4000);
       setShowTransferModal(false);
       fetchTeachers(selectedSchool);
     } catch (err) {
@@ -175,7 +183,6 @@ const AssignTeachers = () => {
       setError('');
       await api.delete(`/admin/teachers/${teacherToDelete.id}`);
       setSuccess(`${teacherToDelete.name} removed from the system.`);
-      setTimeout(() => setSuccess(''), 4000);
       setShowDeleteModal(false);
       fetchTeachers(selectedSchool);
     } catch (err) {
