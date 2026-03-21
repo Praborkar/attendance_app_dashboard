@@ -15,12 +15,26 @@ const DailyAttendance = () => {
         records: [] 
     });
     const [searchQuery, setSearchQuery] = useState('');
+    const [statusFilter, setStatusFilter] = useState('ALL');
+    const [sourceFilter, setSourceFilter] = useState('ALL');
 
     const [loadingSchools, setLoadingSchools] = useState(false);
     const [loadingAttendance, setLoadingAttendance] = useState(false);
     const [exportingConsolidated, setExportingConsolidated] = useState(false);
     const [exportingSchool, setExportingSchool] = useState(false);
     const [error, setError] = useState('');
+
+    const statusOptions = [
+        { id: 'ALL', label: 'All Statuses' },
+        { id: 'PRESENT', label: 'Present' },
+        { id: 'ABSENT', label: 'Absent' }
+    ];
+
+    const sourceOptions = [
+        { id: 'ALL', label: 'All Sources' },
+        { id: 'FINGERPRINT', label: 'Device' },
+        { id: 'MANUAL', label: 'Manual' }
+    ];
 
     // 1. Fetch schools on mount
     useEffect(() => {
@@ -124,9 +138,16 @@ const DailyAttendance = () => {
     };
 
     const filteredAttendance = (attendance.records || []).filter(record => {
+        const matchesStatus = statusFilter === 'ALL' || record.status === statusFilter;
+        const matchesSource = sourceFilter === 'ALL' || (
+            sourceFilter === 'FINGERPRINT' ? record.source === 'FINGERPRINT' : 
+            sourceFilter === 'MANUAL' ? record.source !== 'FINGERPRINT' && record.status !== 'ABSENT' : true
+        );
         const searchLower = searchQuery.toLowerCase();
-        return (record.studentName || '').toLowerCase().includes(searchLower) ||
+        const matchesSearch = (record.studentName || '').toLowerCase().includes(searchLower) ||
             String(record.rollNumber || '').includes(searchQuery);
+
+        return matchesStatus && matchesSource && matchesSearch;
     }).sort((a, b) => (a.rollNumber || 0) - (b.rollNumber || 0));
 
     const formatTime = (dateTimeStr) => {
@@ -180,10 +201,10 @@ const DailyAttendance = () => {
             )}
 
             {/* Controls Bar */}
-            <div className="glass-card p-6 mb-8 grid grid-cols-1 md:grid-cols-3 gap-6 items-end relative z-20">
+            <div className="glass-card p-6 mb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end relative z-20">
                 {/* School Filter */}
                 <div className="min-w-0">
-                    <label className="block text-sm font-semibold text-slate-700 mb-2 whitespace-nowrap">Select School Filter</label>
+                    <label className="block text-sm font-semibold text-slate-700 mb-1 whitespace-nowrap">Select School Filter</label>
                     {loadingSchools ? (
                         <div className="h-11 w-full bg-slate-100 rounded-xl animate-pulse"></div>
                     ) : (
@@ -199,19 +220,19 @@ const DailyAttendance = () => {
 
                 {/* Date Selector */}
                 <div className="min-w-0">
-                    <label className="block text-sm font-semibold text-slate-700 mb-2">Select Date</label>
+                    <label className="block text-sm font-semibold text-slate-700 mb-1">Select Date</label>
                     <div className="flex items-center gap-2">
                         <button
                             onClick={() => changeDate(-1)}
-                            className="p-2.5 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors text-slate-600"
+                            className="p-2 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors text-slate-600 shrink-0"
                         >
-                            <ChevronLeft size={20} />
+                            <ChevronLeft size={16} />
                         </button>
                         <div className="relative flex-1">
-                            <Calendar size={18} className="absolute inset-y-0 left-3 my-auto text-slate-400 pointer-events-none" />
+                            <Calendar size={16} className="absolute inset-y-0 left-3 my-auto text-slate-400 pointer-events-none" />
                             <input
                                 type="date"
-                                className="input-field !pl-10 bg-white"
+                                className="input-field !pl-9 !py-2 bg-white text-sm"
                                 value={selectedDate}
                                 onChange={(e) => setSelectedDate(e.target.value)}
                                 max={new Date().toISOString().split('T')[0]}
@@ -219,23 +240,43 @@ const DailyAttendance = () => {
                         </div>
                         <button
                             onClick={() => changeDate(1)}
-                            className="p-2.5 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors text-slate-600 disabled:opacity-30 disabled:cursor-not-allowed"
+                            className="p-2 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors text-slate-600 disabled:opacity-30 disabled:cursor-not-allowed shrink-0"
                             disabled={selectedDate === new Date().toISOString().split('T')[0]}
                         >
-                            <ChevronRight size={20} />
+                            <ChevronRight size={16} />
                         </button>
                     </div>
                 </div>
 
+                {/* Status Filter */}
+                <div className="min-w-0">
+                    <label className="block text-sm font-semibold text-slate-700 mb-1">Filter by Status</label>
+                    <Dropdown
+                        options={statusOptions}
+                        selected={statusFilter}
+                        onChange={(id) => setStatusFilter(id)}
+                    />
+                </div>
+
+                {/* Source Filter */}
+                <div className="min-w-0">
+                    <label className="block text-sm font-semibold text-slate-700 mb-1">Filter by Source</label>
+                    <Dropdown
+                        options={sourceOptions}
+                        selected={sourceFilter}
+                        onChange={(id) => setSourceFilter(id)}
+                    />
+                </div>
+
                 {/* Search */}
                 <div className="min-w-0">
-                    <label className="block text-sm font-semibold text-slate-700 mb-2">Search Students</label>
+                    <label className="block text-sm font-semibold text-slate-700 mb-1">Search Students</label>
                     <div className="relative">
-                        <Search size={18} className="absolute inset-y-0 left-3 my-auto text-slate-400 pointer-events-none" />
+                        <Search size={16} className="absolute inset-y-0 left-3 my-auto text-slate-400 pointer-events-none" />
                         <input
                             type="text"
-                            className="input-field !pl-10 bg-white"
-                            placeholder="Search by name or roll..."
+                            className="input-field !pl-9 !py-2 bg-white text-sm"
+                            placeholder="Search by name..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
