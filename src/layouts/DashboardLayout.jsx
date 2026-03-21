@@ -21,6 +21,7 @@ const DashboardLayout = () => {
     { name: 'Assign Teachers', path: '/assign-teachers', icon: <Users size={20} /> },
     { name: 'View Students', path: '/view-students', icon: <Users size={20} /> },
     { name: 'Add Teacher', path: '/add-teacher', icon: <UserPlus size={20} /> },
+    { name: 'Manage Teachers', path: '/manage-teachers', icon: <Users size={20} /> },
     { name: 'Manage Schools', path: '/manage-schools', icon: <School size={20} /> },
   ];
 
