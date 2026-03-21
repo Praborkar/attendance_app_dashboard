@@ -223,8 +223,8 @@ const TeacherAttendance = () => {
             </div>
 
             {/* Roster Table */}
-            <div className="glass-card overflow-hidden">
-                <div className="bg-slate-50 border-b border-slate-200 px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="glass-card">
+                <div className="bg-slate-50 border-b border-slate-200 px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-t-2xl">
                     <h2 className="font-bold text-slate-800 flex items-center gap-2">
                         <Clock size={18} className="text-primary-600" />
                         Teacher Attendance for {new Date(selectedDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
@@ -242,7 +242,7 @@ const TeacherAttendance = () => {
                     </div>
                 </div>
 
-                <div className="p-0">
+                <div className="p-0 min-h-[300px]">
                     {loadingAttendance ? (
                         <div className="p-12 space-y-4">
                             {[1, 2, 3, 4, 5].map(i => (
