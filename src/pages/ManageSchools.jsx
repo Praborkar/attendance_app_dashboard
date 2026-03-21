@@ -103,7 +103,7 @@ const ManageSchools = () => {
                 placeholder="Search by school name or address..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="input-field pl-10 py-2.5 bg-white border-slate-200 focus:border-primary-400 focus:ring-4 focus:ring-primary-400/10 transition-all rounded-xl w-full text-sm font-medium"
+                className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 text-sm font-medium transition-all bg-white"
               />
             </div>
             <button
@@ -132,7 +132,7 @@ const ManageSchools = () => {
 
       {/* Schools Table */}
       <div className="glass-card overflow-hidden bg-white border-slate-200 shadow-sm transition-all duration-300">
-        <div className="bg-slate-50/80 border-b border-slate-100 px-6 py-4 flex items-center justify-between">
+        <div className="bg-slate-50/50 border-b border-slate-100 px-6 py-4 flex items-center justify-between">
            <h2 className="font-bold text-slate-800 flex items-center gap-2 text-sm">
              <Building size={16} className="text-slate-400" />
              School List
@@ -142,16 +142,16 @@ const ManageSchools = () => {
            </span>
         </div>
 
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto min-h-[400px]">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-white border-b border-slate-100 italic font-medium">
-                <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">School Details</th>
-                <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Teachers</th>
-                <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Students</th>
-                <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Start Date</th>
-                <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider text-center">Timing</th>
-                <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider text-right">Actions</th>
+              <tr className="bg-white border-b border-slate-100">
+                <th className="px-6 py-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider w-[35%]">School Name</th>
+                <th className="px-6 py-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Teachers</th>
+                <th className="px-6 py-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Students</th>
+                <th className="px-6 py-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Start Date</th>
+                <th className="px-6 py-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider text-center">Timing</th>
+                <th className="px-6 py-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 font-medium text-sm">
@@ -185,7 +185,7 @@ const ManageSchools = () => {
                           title={school.address}
                         >
                           <MapPin size={12} className="shrink-0" />
-                          <span className="truncate max-w-[200px]">{school.address}</span>
+                          <span className="truncate max-w-[280px]">{school.address}</span>
                         </div>
                       </div>
                     </td>
@@ -202,12 +202,12 @@ const ManageSchools = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-2 text-xs text-slate-600 font-bold italic">
+                      <div className="flex items-center gap-2 text-xs text-slate-600 font-medium italic">
                         <Calendar size={14} className="text-slate-400" />
                         {school.startDate ? school.startDate.split('-').reverse().join('-') : 'N/A'}
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-xs text-slate-600 font-bold whitespace-nowrap text-center">
+                    <td className="px-6 py-4 text-xs text-slate-600 font-medium whitespace-nowrap text-center">
                        <div className="flex items-center justify-center gap-2">
                           <Clock size={14} className="text-slate-400" />
                           <span>{school.startTime} - {school.endTime}</span>
