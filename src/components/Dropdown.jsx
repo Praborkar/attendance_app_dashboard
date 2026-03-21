@@ -67,7 +67,7 @@ export default function Dropdown({ options, selected, onChange, placeholder = '-
             </div>
           </div>
 
-          <div className="max-h-60 overflow-y-auto custom-scrollbar">
+          <div className="max-h-48 overflow-y-auto custom-scrollbar">
             {filteredOptions.length > 0 ? (
               <ul className="py-1">
                 {filteredOptions.map((option) => (
