@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { School, MapPin, Building } from 'lucide-react';
+import { School, MapPin, Building, Calendar } from 'lucide-react';
 import api from '../api/axiosConfig';
 import TimePicker from '../components/TimePicker';
 
@@ -8,7 +8,8 @@ const AddSchool = () => {
     name: '',
     address: '',
     startTime: '08:00',
-    endTime: '15:00'
+    endTime: '15:00',
+    startDate: new Date().toISOString().split('T')[0]
   });
   
   const [loading, setLoading] = useState(false);
@@ -48,7 +49,7 @@ const AddSchool = () => {
     try {
       await api.post('/schools', formData);
       setSuccess(`The school '${formData.name}' was successfully registered in the system.`);
-      setFormData({ name: '', address: '', startTime: '08:00', endTime: '15:00' });
+      setFormData({ name: '', address: '', startTime: '08:00', endTime: '15:00', startDate: new Date().toISOString().split('T')[0] });
     } catch (err) {
       setError(err.response?.data?.message || 'An error occurred while adding the school.');
     } finally {
@@ -90,7 +91,7 @@ const AddSchool = () => {
 
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-              <div className="md:col-span-2">
+              <div className="md:col-span-1">
                 <label className="block text-sm font-semibold text-slate-700 mb-2">School Name</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
@@ -103,6 +104,22 @@ const AddSchool = () => {
                     onChange={handleChange}
                     className="input-field pl-10 bg-white"
                     placeholder="e.g. Lincoln High School"
+                  />
+                </div>
+              </div>
+
+              <div className="md:col-span-1">
+                <label className="block text-sm font-semibold text-slate-700 mb-2">School Start Date</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                    <Calendar size={18} />
+                  </div>
+                  <input
+                    type="date"
+                    name="startDate"
+                    value={formData.startDate}
+                    onChange={handleChange}
+                    className="input-field !pl-10 bg-white"
                   />
                 </div>
               </div>
