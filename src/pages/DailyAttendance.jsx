@@ -148,7 +148,7 @@ const DailyAttendance = () => {
                 <div className="flex gap-3">
                     <button
                         onClick={() => handleExport('consolidated')}
-                        disabled={exportingConsolidated || exportingSchool}
+                        disabled={exportingConsolidated}
                         className={`flex items-center gap-2 px-4 py-2.5 bg-slate-800 text-white rounded-xl font-bold text-sm hover:bg-slate-900 transition-all shadow-sm disabled:opacity-50 transform ${exportingConsolidated ? '' : 'active:scale-95'}`}
                     >
                         {exportingConsolidated ? (
@@ -160,7 +160,7 @@ const DailyAttendance = () => {
                     {selectedSchool && (
                         <button
                             onClick={() => handleExport('school')}
-                            disabled={exportingConsolidated || exportingSchool}
+                            disabled={exportingSchool}
                             className={`flex items-center gap-2 px-4 py-2.5 bg-emerald-600 text-white rounded-xl font-bold text-sm hover:bg-emerald-700 transition-all shadow-sm disabled:opacity-50 transform ${exportingSchool ? '' : 'active:scale-95'}`}
                         >
                             {exportingSchool ? (
