@@ -101,7 +101,7 @@ const AddTeacher = () => {
         <p className="text-slate-500 text-sm mt-1">Create a new teacher account and assign to a school.</p>
       </div>
 
-      <div className="glass-card overflow-hidden">
+      <div className="glass-card">
         <div className="bg-slate-50 border-b border-slate-100 p-6 flex items-center gap-4">
           <div className="h-12 w-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center">
              <UserPlus size={24} />
