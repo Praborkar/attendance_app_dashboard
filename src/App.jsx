@@ -5,7 +5,7 @@ import DashboardOverview from './pages/DashboardOverview';
 import AssignTeachers from './pages/AssignTeachers';
 import ViewStudents from './pages/ViewStudents';
 import AddTeacher from './pages/AddTeacher';
-import AddSchool from './pages/AddSchool';
+import ManageSchools from './pages/ManageSchools';
 import DailyAttendance from './pages/DailyAttendance';
 import TeacherAttendance from './pages/TeacherAttendance';
 
@@ -37,7 +37,7 @@ function App() {
           <Route path="add-teacher" element={<AddTeacher />} />
           <Route path="attendance" element={<DailyAttendance />} />
           <Route path="teacher-attendance" element={<TeacherAttendance />} />
-          <Route path="add-school" element={<AddSchool />} />
+          <Route path="manage-schools" element={<ManageSchools />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />
