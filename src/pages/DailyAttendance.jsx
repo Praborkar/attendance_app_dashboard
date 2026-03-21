@@ -18,7 +18,8 @@ const DailyAttendance = () => {
 
     const [loadingSchools, setLoadingSchools] = useState(false);
     const [loadingAttendance, setLoadingAttendance] = useState(false);
-    const [exporting, setExporting] = useState(false);
+    const [exportingConsolidated, setExportingConsolidated] = useState(false);
+    const [exportingSchool, setExportingSchool] = useState(false);
     const [error, setError] = useState('');
 
     // 1. Fetch schools on mount
@@ -85,7 +86,9 @@ const DailyAttendance = () => {
 
     const handleExport = async (type) => {
         try {
-            setExporting(true);
+            if (type === 'school') setExportingSchool(true);
+            else setExportingConsolidated(true);
+            
             const endpoint = type === 'school' ? '/reports/export/school' : '/reports/export/consolidated';
             const params = type === 'school' ? { schoolId: selectedSchool, date: selectedDate } : { date: selectedDate };
 
@@ -105,7 +108,8 @@ const DailyAttendance = () => {
         } catch (err) {
             setError('Failed to export Excel report.');
         } finally {
-            setExporting(false);
+            setExportingSchool(false);
+            setExportingConsolidated(false);
         }
     };
 
@@ -134,20 +138,26 @@ const DailyAttendance = () => {
                 <div className="flex gap-3">
                     <button
                         onClick={() => handleExport('consolidated')}
-                        disabled={exporting}
-                        className="flex items-center gap-2 px-4 py-2.5 bg-slate-800 text-white rounded-xl font-bold text-sm hover:bg-slate-900 transition-all shadow-sm disabled:opacity-50"
+                        disabled={exportingConsolidated || exportingSchool}
+                        className={`flex items-center gap-2 px-4 py-2.5 bg-slate-800 text-white rounded-xl font-bold text-sm hover:bg-slate-900 transition-all shadow-sm disabled:opacity-50 transform ${exportingConsolidated ? '' : 'active:scale-95'}`}
                     >
-                        <FileSpreadsheet size={18} />
-                        Consolidated Report
+                        {exportingConsolidated ? (
+                             <><div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" /> Processing...</>
+                        ) : (
+                            <><FileSpreadsheet size={18} /> Consolidated Report</>
+                        )}
                     </button>
                     {selectedSchool && (
                         <button
                             onClick={() => handleExport('school')}
-                            disabled={exporting}
-                            className="flex items-center gap-2 px-4 py-2.5 bg-emerald-600 text-white rounded-xl font-bold text-sm hover:bg-emerald-700 transition-all shadow-sm disabled:opacity-50"
+                            disabled={exportingConsolidated || exportingSchool}
+                            className={`flex items-center gap-2 px-4 py-2.5 bg-emerald-600 text-white rounded-xl font-bold text-sm hover:bg-emerald-700 transition-all shadow-sm disabled:opacity-50 transform ${exportingSchool ? '' : 'active:scale-95'}`}
                         >
-                            <Download size={18} />
-                            School Report
+                            {exportingSchool ? (
+                                <><div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" /> Processing...</>
+                            ) : (
+                                <><Download size={18} /> School Report</>
+                            )}
                         </button>
                     )}
                 </div>
