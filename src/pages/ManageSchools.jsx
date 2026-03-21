@@ -88,18 +88,38 @@ const ManageSchools = () => {
 
   return (
     <div className="pb-12">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Manage Schools</h1>
-          <p className="text-slate-500 text-sm mt-1">View, edit, or register educational institutions.</p>
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8">
+        <div className="flex items-start gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Manage Schools</h1>
+            <p className="text-slate-500 text-sm mt-1">View, edit, or register educational institutions.</p>
+          </div>
+          <span className="bg-slate-200 text-slate-700 text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap mt-1 shadow-sm border border-slate-300/30">
+            {schools.length} Schools
+          </span>
         </div>
-        <button
-          onClick={handleAddNew}
-          className="btn-primary flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 shadow-primary-600/20"
-        >
-          <Plus size={18} />
-          Register New School
-        </button>
+
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 lg:flex-1 lg:justify-end max-w-2xl w-full">
+           <div className="relative flex-1 group">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary-500 transition-colors">
+                <Search size={18} />
+              </div>
+              <input
+                type="text"
+                placeholder="Search by name, address or prefix..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="input-field pl-10 py-2.5 bg-white border-slate-200 focus:border-primary-400 focus:ring-4 focus:ring-primary-400/10 transition-all rounded-xl w-full"
+              />
+            </div>
+            <button
+              onClick={handleAddNew}
+              className="flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-bold text-white bg-primary-600 hover:bg-primary-700 shadow-lg shadow-primary-600/20 transition-all whitespace-nowrap"
+            >
+              <Plus size={20} />
+              Register New School
+            </button>
+        </div>
       </div>
 
       {/* Alerts */}
@@ -115,33 +135,6 @@ const ManageSchools = () => {
           {success}
         </div>
       )}
-
-      {/* Search & Stats */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
-        <div className="lg:col-span-3 h-full">
-            <div className="relative h-full flex items-center">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-                <Search size={18} />
-              </div>
-              <input
-                type="text"
-                placeholder="Search by school name, address or prefix..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="input-field pl-10 h-full min-h-[48px] bg-white border-slate-200"
-              />
-            </div>
-        </div>
-        <div className="glass-card p-4 flex items-center gap-4 bg-white/50">
-           <div className="h-10 w-10 rounded-xl bg-primary-100 text-primary-600 flex items-center justify-center">
-              <Building size={20} />
-           </div>
-           <div>
-              <p className="text-xs text-slate-500 font-medium uppercase tracking-wider">Total Schools</p>
-              <p className="text-xl font-bold text-slate-900">{schools.length}</p>
-           </div>
-        </div>
-      </div>
 
       {/* Schools Table */}
       <div className="glass-card overflow-hidden bg-white border-slate-200 shadow-sm">
@@ -196,7 +189,7 @@ const ManageSchools = () => {
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2 text-sm text-slate-600 font-medium">
                         <Calendar size={14} className="text-slate-400" />
-                        {new Date(school.startDate).toLocaleDateString('en-GB')}
+                        {school.startDate ? school.startDate.split('-').reverse().join('-') : 'N/A'}
                       </div>
                     </td>
                     <td className="px-6 py-4 text-sm text-slate-600 font-medium">
