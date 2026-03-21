@@ -83,12 +83,14 @@ const ManageSchools = () => {
     if (!schoolToDelete) return;
     setDeleteLoading(true);
     try {
+      console.log(`[DEBUG] Attempting DELETE for school: ${schoolToDelete.schoolId}`);
       await api.delete(`/schools/${schoolToDelete.schoolId}`);
       setSuccess(`School '${schoolToDelete.name}' deleted successfully.`);
       fetchSchools();
       setIsDeleteModalOpen(false);
       setSchoolToDelete(null);
     } catch (err) {
+      console.error('[DEBUG] Delete failed:', err.response || err);
       setError(err.response?.data?.message || 'Failed to delete school.');
     } finally {
       setDeleteLoading(false);
