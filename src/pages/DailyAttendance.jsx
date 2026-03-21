@@ -284,15 +284,17 @@ const DailyAttendance = () => {
                                                     {record.status}
                                                 </span>
                                             </td>
-                                            <td className="py-4 px-6">
-                                                <div className="flex items-center gap-2 text-sm text-slate-600">
-                                                    {record.source === 'FINGERPRINT' ? (
-                                                        <><Fingerprint size={16} className="text-primary-500" /> Device</>
-                                                    ) : (
-                                                        <><Edit3 size={16} className="text-orange-500" /> Manual</>
-                                                    )}
-                                                </div>
-                                            </td>
+                                             <td className="py-4 px-6">
+                                                 <div className="flex items-center gap-2 text-sm text-slate-600">
+                                                     {record.status === 'ABSENT' ? (
+                                                        <span className="text-slate-400 font-medium">N/A</span>
+                                                     ) : record.source === 'FINGERPRINT' ? (
+                                                         <><Fingerprint size={16} className="text-primary-500" /> Device</>
+                                                     ) : (
+                                                         <><Edit3 size={16} className="text-orange-500" /> Manual</>
+                                                     )}
+                                                 </div>
+                                             </td>
                                             <td className="py-4 px-6 text-right font-medium text-slate-500 text-sm">
                                                 {formatTime(record.markedAt)}
                                             </td>
