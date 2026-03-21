@@ -483,21 +483,21 @@ const ViewStudents = () => {
                             <div className="flex items-center justify-end gap-2">
                               <button
                                 onClick={() => openEditModal(student)}
-                                className="px-3 py-1.5 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors text-xs flex items-center gap-2"
+                                className="px-3 py-1.5 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors text-xs flex items-center gap-2 font-bold"
                               >
-                                Edit <Pencil size={14} />
+                                <Pencil size={14} /> Edit
                               </button>
                               <button
                                 onClick={() => openTransferModal(student)}
-                                className="px-3 py-1.5 border border-blue-200 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors text-xs flex items-center gap-2"
+                                className="px-3 py-1.5 border border-blue-200 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors text-xs flex items-center gap-2 font-bold"
                               >
-                                Transfer <ArrowRightLeft size={14} />
+                                <ArrowRightLeft size={14} /> Transfer
                               </button>
                               <button
                                 onClick={() => openDeleteModal(student)}
-                                className="px-3 py-1.5 border border-red-200 rounded-lg text-red-600 hover:bg-red-50 transition-colors text-xs flex items-center gap-2"
+                                className="px-3 py-1.5 border border-red-200 rounded-lg text-red-600 hover:bg-red-50 transition-colors text-xs flex items-center gap-2 font-bold"
                               >
-                                Delete <Trash2 size={14} />
+                                <Trash2 size={14} /> Delete
                               </button>
                             </div>
                           </td>
@@ -566,7 +566,11 @@ const ViewStudents = () => {
                 disabled={transferLoading || !transferSchoolId}
                 className="px-6 py-2 font-medium text-white bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-600/20 rounded-xl transition-all text-sm disabled:opacity-50"
               >
-                {transferLoading ? 'Transferring...' : 'Transfer Student'}
+                {transferLoading ? 'Transferring...' : (
+                  <>
+                    <ArrowRightLeft size={14} /> Transfer Student
+                  </>
+                )}
               </button>
             </div>
           </div>
@@ -660,7 +664,11 @@ const ViewStudents = () => {
                 disabled={editLoading}
                 className="px-6 py-2 font-medium text-white bg-slate-800 hover:bg-slate-900 shadow-md shadow-slate-800/20 rounded-xl transition-all text-sm disabled:opacity-50"
               >
-                {editLoading ? 'Updating...' : 'Save Changes'}
+                {editLoading ? 'Updating...' : (
+                  <>
+                    <Pencil size={14} /> Save Changes
+                  </>
+                )}
               </button>
             </div>
           </div>
@@ -701,7 +709,11 @@ const ViewStudents = () => {
                 disabled={deleteLoading}
                 className="px-6 py-2 font-medium text-white bg-red-600 hover:bg-red-700 shadow-md shadow-red-600/20 rounded-xl transition-all text-sm"
               >
-                {deleteLoading ? 'Deleting...' : 'Yes, Delete Student'}
+                {deleteLoading ? 'Deleting...' : (
+                  <>
+                    <Trash2 size={14} /> Yes, Delete Student
+                  </>
+                )}
               </button>
             </div>
           </div>

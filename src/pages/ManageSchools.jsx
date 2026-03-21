@@ -44,6 +44,21 @@ const ManageSchools = () => {
     }
   }, [error, success]);
 
+  // Helper to format time to 12h format
+  const formatTime12h = (timeStr) => {
+    if (!timeStr) return '-';
+    try {
+      const [hours, minutes] = timeStr.split(':');
+      let h = parseInt(hours, 10);
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      h = h % 12;
+      h = h ? h : 12;
+      return `${h}:${minutes} ${ampm}`;
+    } catch (e) {
+      return timeStr;
+    }
+  };
+
   const filteredSchools = schools.filter(school => 
     school.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     school.address.toLowerCase().includes(searchQuery.toLowerCase())
@@ -210,7 +225,7 @@ const ManageSchools = () => {
                     <td className="px-6 py-4 text-xs text-slate-600 font-medium whitespace-nowrap text-center">
                        <div className="flex items-center justify-center gap-2">
                           <Clock size={14} className="text-slate-400" />
-                          <span>{school.startTime} - {school.endTime}</span>
+                          <span>{formatTime12h(school.startTime)} - {formatTime12h(school.endTime)}</span>
                        </div>
                     </td>
                     <td className="px-6 py-4 text-right">
@@ -219,13 +234,13 @@ const ManageSchools = () => {
                           onClick={() => handleEdit(school)}
                           className="px-3 py-1.5 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-100 transition-all text-xs flex items-center gap-2 font-bold"
                         >
-                          Edit <Pencil size={14} />
+                          <Pencil size={14} /> Edit
                         </button>
                         <button
                           onClick={() => handleDeleteClick(school)}
                           className="px-3 py-1.5 border border-red-200 rounded-lg text-red-600 hover:bg-red-50 transition-all text-xs flex items-center gap-2 font-bold"
                         >
-                          Delete <Trash2 size={14} />
+                          <Trash2 size={14} /> Delete
                         </button>
                       </div>
                     </td>
@@ -272,7 +287,11 @@ const ManageSchools = () => {
                    >
                      {deleteLoading ? (
                         <div className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                     ) : 'Delete School'}
+                     ) : (
+                       <>
+                         <Trash2 size={14} /> Delete School
+                       </>
+                     )}
                    </button>
                 </div>
              </div>

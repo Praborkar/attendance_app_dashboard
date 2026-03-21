@@ -277,9 +277,9 @@ const AssignTeachers = () => {
                         <button
                           onClick={() => openDeleteModal(teacher)}
                           disabled={actionLoading}
-                          className="px-3 py-1.5 border border-red-200 rounded-lg text-red-600 hover:bg-red-50 transition-colors text-xs flex items-center gap-2"
+                          className="px-3 py-1.5 border border-red-200 rounded-lg text-red-600 hover:bg-red-50 transition-colors text-xs flex items-center gap-2 font-bold"
                         >
-                          Delete <Trash2 size={14} />
+                          <Trash2 size={14} /> Delete
                         </button>
                       </div>
                     </li>
@@ -326,9 +326,9 @@ const AssignTeachers = () => {
                         <button
                           onClick={() => openTransferModal(teacher)}
                           disabled={actionLoading}
-                          className="px-3 py-1.5 border border-blue-200 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors text-xs flex items-center gap-2"
+                          className="px-3 py-1.5 border border-blue-200 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors text-xs flex items-center gap-2 font-bold"
                         >
-                          Transfer <ArrowRightLeft size={14} />
+                          <ArrowRightLeft size={14} /> Transfer
                         </button>
                         <button
                           onClick={() => initiateUnassign(teacher)}
@@ -340,9 +340,9 @@ const AssignTeachers = () => {
                         <button
                           onClick={() => openDeleteModal(teacher)}
                           disabled={actionLoading}
-                          className="px-3 py-1.5 border border-red-200 rounded-lg text-red-600 hover:bg-red-50 transition-colors text-xs flex items-center gap-2"
+                          className="px-3 py-1.5 border border-red-200 rounded-lg text-red-600 hover:bg-red-50 transition-colors text-xs flex items-center gap-2 font-bold"
                         >
-                          Delete <Trash2 size={14} />
+                          <Trash2 size={14} /> Delete
                         </button>
                       </div>
                     </li>
@@ -458,7 +458,11 @@ const AssignTeachers = () => {
                 disabled={transferLoading || !transferSchoolId}
                 className="px-6 py-2 font-medium text-white bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-600/20 rounded-xl transition-all text-sm disabled:opacity-50"
               >
-                {transferLoading ? 'Transferring...' : 'Transfer Teacher'}
+                {transferLoading ? 'Transferring...' : (
+                  <>
+                    <ArrowRightLeft size={14} /> Transfer Teacher
+                  </>
+                )}
               </button>
             </div>
           </div>
@@ -499,7 +503,11 @@ const AssignTeachers = () => {
                 disabled={deleteLoading}
                 className="px-6 py-2 font-medium text-white bg-red-600 hover:bg-red-700 shadow-md shadow-red-600/20 rounded-xl transition-all text-sm"
               >
-                {deleteLoading ? 'Deleting...' : 'Yes, Delete Teacher'}
+                {deleteLoading ? 'Deleting...' : (
+                  <>
+                    <Trash2 size={14} /> Yes, Delete Teacher
+                  </>
+                )}
               </button>
             </div>
           </div>
