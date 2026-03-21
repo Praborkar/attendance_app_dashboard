@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { School, Users, UserCheck } from 'lucide-react';
 import api from '../api/axiosConfig';
 
 const DashboardOverview = () => {
+  const navigate = useNavigate();
   const [stats, setStats] = useState({
     totalSchools: 0,
     totalStudents: 0,
@@ -44,11 +46,14 @@ const DashboardOverview = () => {
     }
   };
 
-  const StatCard = ({ title, value, icon: Icon, colorClass, borderClass }) => (
-    <div className={`glass-card p-6 flex items-center justify-between border-l-4 ${borderClass} transition-transform hover:-translate-y-1 duration-300`}>
+  const StatCard = ({ title, value, icon: Icon, colorClass, borderClass, path }) => (
+    <div 
+      onClick={() => path && navigate(path)}
+      className={`glass-card p-6 flex items-center justify-between border-l-4 ${borderClass} transition-transform hover:-translate-y-1 duration-300 cursor-pointer group`}
+    >
       <div>
         <p className="text-sm font-semibold text-slate-500 mb-1">{title}</p>
-        <h3 className="text-3xl font-bold text-slate-800">
+        <h3 className="text-3xl font-bold text-slate-800 group-hover:text-primary-600 transition-colors">
           {loading ? (
             <div className="h-9 w-16 bg-slate-200 rounded animate-pulse" />
           ) : (
@@ -56,7 +61,7 @@ const DashboardOverview = () => {
           )}
         </h3>
       </div>
-      <div className={`h-14 w-14 rounded-2xl flex items-center justify-center ${colorClass}`}>
+      <div className={`h-14 w-14 rounded-2xl flex items-center justify-center transition-all duration-300 ${colorClass} group-hover:scale-110 shadow-sm`}>
         <Icon size={28} />
       </div>
     </div>
@@ -83,6 +88,7 @@ const DashboardOverview = () => {
           icon={School} 
           colorClass="bg-blue-50 text-blue-600"
           borderClass="border-l-blue-500"
+          path="/manage-schools"
         />
         <StatCard 
           title="Total Teachers" 
@@ -90,6 +96,7 @@ const DashboardOverview = () => {
           icon={UserCheck} 
           colorClass="bg-green-50 text-green-600"
           borderClass="border-l-green-500"
+          path="/manage-teachers"
         />
         <StatCard 
           title="Total Students" 
@@ -97,6 +104,7 @@ const DashboardOverview = () => {
           icon={Users} 
           colorClass="bg-purple-50 text-purple-600"
           borderClass="border-l-purple-500"
+          path="/view-students"
         />
       </div>
       

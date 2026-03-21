@@ -1,5 +1,5 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Users, UserPlus, School, LogOut, ClipboardList } from 'lucide-react';
+import { LayoutDashboard, Users, UserPlus, School, LogOut, Fingerprint, GraduationCap } from 'lucide-react';
 import logo from '../assets/mahavir_dashboard_logo.png';
 
 const DashboardLayout = () => {
@@ -16,10 +16,10 @@ const DashboardLayout = () => {
 
   const navItems = [
     { name: 'Dashboard Reports', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
-    { name: 'Student Attendance', path: '/attendance', icon: <ClipboardList size={20} /> },
-    { name: 'Teacher Attendance', path: '/teacher-attendance', icon: <UserPlus size={20} /> },
+    { name: 'Student Attendance', path: '/attendance', icon: <Fingerprint size={20} /> },
+    { name: 'Teacher Attendance', path: '/teacher-attendance', icon: <Fingerprint size={20} /> },
     { name: 'Assign Teachers', path: '/assign-teachers', icon: <Users size={20} /> },
-    { name: 'View Students', path: '/view-students', icon: <Users size={20} /> },
+    { name: 'View Students', path: '/view-students', icon: <GraduationCap size={20} /> },
     { name: 'Add Teacher', path: '/add-teacher', icon: <UserPlus size={20} /> },
     { name: 'Manage Teachers', path: '/manage-teachers', icon: <Users size={20} /> },
     { name: 'Manage Schools', path: '/manage-schools', icon: <School size={20} /> },
@@ -43,7 +43,7 @@ const DashboardLayout = () => {
               key={item.path}
               to={item.path}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium ${isActive
+                `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium whitespace-nowrap ${isActive
                   ? 'bg-primary-50 text-primary-600 shadow-sm border border-primary-100'
                   : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 border border-transparent'
                 }`
