@@ -126,71 +126,73 @@ const AddTeacher = () => {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">School Assignment <span className="text-red-500">*</span></label>
-              {loadingSchools ? (
-                 <div className="h-11 bg-slate-100 rounded-xl animate-pulse"></div>
-              ) : (
-                <Dropdown
-                  icon={School}
-                  options={schools.map(s => ({ id: s.schoolId, label: `${s.name} (${s.address})` }))}
-                  selected={formData.schoolId}
-                  onChange={handleSchoolChange}
-                  placeholder="-- Choose a School --"
-                />
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">Full Name <span className="text-red-500">*</span></label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-                  <User size={18} />
-                </div>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  className="input-field pl-10 bg-white"
-                  placeholder="e.g. Jane Doe"
-                />
+          <form onSubmit={handleSubmit}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+              <div className="md:col-span-2">
+                <label className="block text-sm font-semibold text-slate-700 mb-2">School Assignment <span className="text-red-500">*</span></label>
+                {loadingSchools ? (
+                   <div className="h-11 bg-slate-100 rounded-xl animate-pulse"></div>
+                ) : (
+                  <Dropdown
+                    icon={School}
+                    options={schools.map(s => ({ id: s.schoolId, label: `${s.name} (${s.address})` }))}
+                    selected={formData.schoolId}
+                    onChange={handleSchoolChange}
+                    placeholder="-- Choose a School --"
+                  />
+                )}
               </div>
-            </div>
 
-            <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">Mobile Number <span className="text-red-500">*</span></label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-                  <Phone size={18} />
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-2">Full Name <span className="text-red-500">*</span></label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                    <User size={18} />
+                  </div>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    className="input-field pl-10 bg-white"
+                    placeholder="e.g. Jane Doe"
+                  />
                 </div>
-                <input
-                  type="tel"
-                  name="mobileNo"
-                  value={formData.mobileNo}
-                  onChange={handleChange}
-                  className="input-field pl-10 bg-white"
-                  placeholder="10-digit mobile number"
-                  maxLength={10}
-                />
               </div>
-            </div>
 
-            <div>
-              <label className="block text-sm font-semibold text-slate-700 mb-2">Email Address (Optional)</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-                  <Mail size={18} />
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-2">Mobile Number <span className="text-red-500">*</span></label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                    <Phone size={18} />
+                  </div>
+                  <input
+                    type="tel"
+                    name="mobileNo"
+                    value={formData.mobileNo}
+                    onChange={handleChange}
+                    className="input-field pl-10 bg-white"
+                    placeholder="10-digit mobile number"
+                    maxLength={10}
+                  />
                 </div>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="input-field pl-10 bg-white"
-                  placeholder="teacher@school.edu"
-                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-2">Email Address (Optional)</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                    <Mail size={18} />
+                  </div>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="input-field pl-10 bg-white"
+                    placeholder="teacher@school.edu"
+                  />
+                </div>
               </div>
             </div>
 
