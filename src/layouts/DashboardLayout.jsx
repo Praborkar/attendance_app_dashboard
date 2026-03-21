@@ -19,7 +19,7 @@ const DashboardLayout = () => {
     { name: 'Student Attendance', path: '/attendance', icon: <Fingerprint size={20} /> },
     { name: 'Teacher Attendance', path: '/teacher-attendance', icon: <Fingerprint size={20} /> },
     { name: 'Assign Teachers', path: '/assign-teachers', icon: <Users size={20} /> },
-    { name: 'View Students', path: '/view-students', icon: <GraduationCap size={20} /> },
+    { name: 'Manage Students', path: '/manage-students', icon: <GraduationCap size={20} /> },
     { name: 'Add Teacher', path: '/add-teacher', icon: <UserPlus size={20} /> },
     { name: 'Manage Teachers', path: '/manage-teachers', icon: <Users size={20} /> },
     { name: 'Manage Schools', path: '/manage-schools', icon: <School size={20} /> },

@@ -104,7 +104,7 @@ const DashboardOverview = () => {
           icon={Users} 
           colorClass="bg-purple-50 text-purple-600"
           borderClass="border-l-purple-500"
-          path="/view-students"
+          path="/manage-students"
         />
       </div>
       

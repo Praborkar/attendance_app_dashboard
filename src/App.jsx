@@ -3,7 +3,7 @@ import DashboardLayout from './layouts/DashboardLayout';
 import Login from './pages/Login';
 import DashboardOverview from './pages/DashboardOverview';
 import AssignTeachers from './pages/AssignTeachers';
-import ViewStudents from './pages/ViewStudents';
+import ManageStudents from './pages/ManageStudents';
 import AddTeacher from './pages/AddTeacher';
 import ManageSchools from './pages/ManageSchools';
 import DailyAttendance from './pages/DailyAttendance';
@@ -34,7 +34,7 @@ function App() {
           <Route index element={<Navigate to="/dashboard" replace />} />
           <Route path="dashboard" element={<DashboardOverview />} />
           <Route path="assign-teachers" element={<AssignTeachers />} />
-          <Route path="view-students" element={<ViewStudents />} />
+          <Route path="manage-students" element={<ManageStudents />} />
           <Route path="add-teacher" element={<AddTeacher />} />
           <Route path="attendance" element={<DailyAttendance />} />
           <Route path="teacher-attendance" element={<TeacherAttendance />} />

@@ -3,7 +3,7 @@ import { School, UserCircle2, Search, ArrowRightLeft, Trash2, Upload, X, AlertTr
 import Dropdown from '../components/Dropdown';
 import api from '../api/axiosConfig';
 
-const ViewStudents = () => {
+const ManageStudents = () => {
   const [schools, setSchools] = useState([]);
   const [selectedSchool, setSelectedSchool] = useState('');
 
@@ -248,8 +248,8 @@ const ViewStudents = () => {
     <div className="max-w-6xl mx-auto pb-12">
       <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">View Students</h1>
-          <p className="text-slate-500 text-sm mt-1">Browse the roster of enrolled students per school.</p>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Manage Students</h1>
+          <p className="text-slate-500 text-sm mt-1">View, search, and manage student records across all schools.</p>
         </div>
         <button
           onClick={() => setShowBulkModal(true)}
@@ -806,4 +806,4 @@ const ViewStudents = () => {
   );
 };
 
-export default ViewStudents;
+export default ManageStudents;
