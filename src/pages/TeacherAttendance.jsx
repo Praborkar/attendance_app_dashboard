@@ -140,7 +140,7 @@ const TeacherAttendance = () => {
         const dateInput = (dateTimeStr.endsWith('Z') || dateTimeStr.includes('+'))
             ? dateTimeStr
             : `${dateTimeStr}Z`;
-        return new Date(dateInput).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        return new Date(dateInput).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
     };
 
     return (
@@ -229,13 +229,13 @@ const TeacherAttendance = () => {
                         Teacher Attendance for {new Date(selectedDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
                     </h2>
                     <div className="flex flex-wrap items-center gap-2">
-                        <span className="bg-slate-200 text-slate-700 text-[10px] uppercase tracking-tighter font-black px-2.5 py-1 rounded-lg border border-slate-300">
+                        <span className="bg-slate-200 text-slate-700 text-xs font-bold px-3 py-1 rounded-full border border-slate-300">
                             Total: {attendance.totalTeachers}
                         </span>
-                        <span className="bg-emerald-100 text-emerald-700 text-[10px] uppercase tracking-tighter font-black px-2.5 py-1 rounded-lg border border-emerald-200">
+                        <span className="bg-emerald-100 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full border border-emerald-200">
                             Present: {attendance.presentCount}
                         </span>
-                        <span className="bg-red-100 text-red-700 text-[10px] uppercase tracking-tighter font-black px-2.5 py-1 rounded-lg border border-red-200">
+                        <span className="bg-red-100 text-red-700 text-xs font-bold px-3 py-1 rounded-full border border-red-200">
                             Absent: {attendance.absentCount}
                         </span>
                     </div>

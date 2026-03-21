@@ -154,7 +154,7 @@ const ManageSchools = () => {
              <Building size={16} className="text-slate-400" />
              School List
            </h2>
-           <span className="bg-slate-200 text-slate-700 text-[10px] uppercase tracking-wider font-heavy px-2.5 py-1 rounded-full border border-slate-300/30">
+           <span className="bg-slate-200 text-slate-700 text-xs font-bold px-3 py-1 rounded-full border border-slate-300/30 whitespace-nowrap">
              {schools.length} Schools
            </span>
         </div>
