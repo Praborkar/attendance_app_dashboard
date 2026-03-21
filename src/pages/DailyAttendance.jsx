@@ -301,7 +301,7 @@ const DailyAttendance = () => {
                     </div>
                 </div>
 
-                <div className="p-0 min-h-[300px]">
+                <div className="p-0">
                     {loadingAttendance ? (
                         <div className="p-12 space-y-4">
                             {[1, 2, 3, 4, 5].map(i => (
@@ -309,7 +309,7 @@ const DailyAttendance = () => {
                             ))}
                         </div>
                     ) : (
-                        <div className="overflow-x-auto">
+                        <div className="overflow-x-auto min-h-[400px]">
                             <table className="w-full text-left border-collapse">
                                 <thead>
                                     <tr className="bg-white border-b border-slate-100">
