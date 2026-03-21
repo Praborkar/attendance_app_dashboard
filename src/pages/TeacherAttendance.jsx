@@ -187,10 +187,9 @@ const TeacherAttendance = () => {
                             <ChevronLeft size={20} />
                         </button>
                         <div className="relative flex-1">
-                            <Calendar size={18} className="absolute inset-y-0 left-3 my-auto text-slate-400 pointer-events-none" />
                             <input
                                 type="date"
-                                className="input-field !pl-10 bg-white"
+                                className="input-field bg-white"
                                 value={selectedDate}
                                 onChange={(e) => setSelectedDate(e.target.value)}
                                 max={new Date().toISOString().split('T')[0]}
