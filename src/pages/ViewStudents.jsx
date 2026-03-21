@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { School, UserCircle2, Search, ArrowRightLeft, Trash2, Upload, X, AlertTriangle, Pencil } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { School, UserCircle2, Search, ArrowRightLeft, Trash2, Upload, X, AlertTriangle, Pencil, Filter } from 'lucide-react';
 import Dropdown from '../components/Dropdown';
 import api from '../api/axiosConfig';
 
@@ -14,6 +14,21 @@ const ViewStudents = () => {
   const [loadingStudents, setLoadingStudents] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  
+  // Table Filtering State
+  const [levelFilter, setLevelFilter] = useState('ALL');
+  const [genderFilter, setGenderFilter] = useState('ALL');
+  const [levelOpen, setLevelOpen] = useState(false);
+  const [genderOpen, setGenderOpen] = useState(false);
+  const levelRef = useRef(null);
+  const genderRef = useRef(null);
+
+  const genderOptions = [
+    { id: 'ALL', label: 'All Genders' },
+    { id: 'MALE', label: 'Male' },
+    { id: 'FEMALE', label: 'Female' },
+    { id: 'OTHER', label: 'Other' }
+  ];
 
   // Transfer Modal State
   const [showTransferModal, setShowTransferModal] = useState(false);
@@ -52,6 +67,16 @@ const ViewStudents = () => {
       return () => clearTimeout(timer);
     }
   }, [error, success]);
+
+  // 3. Click outside to close filters
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (levelRef.current && !levelRef.current.contains(event.target)) setLevelOpen(false);
+      if (genderRef.current && !genderRef.current.contains(event.target)) setGenderOpen(false);
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // 2. Fetch students when selected school changes
   useEffect(() => {
@@ -199,15 +224,24 @@ const ViewStudents = () => {
     }
   };
 
+  // Derive dynamic level options from students data
+  const levelOptions = ['ALL', ...new Set(students.map(s => s.level).filter(Boolean))].sort();
+
   const filteredStudents = students.filter(student => {
     const searchLower = searchQuery.toLowerCase();
     const safeName = student.name || '';
     const safeRoll = student.rollNumber || '';
     const safeLevel = student.level || '';
+    const safeGender = student.gender || '';
 
-    return safeName.toLowerCase().includes(searchLower) ||
+    const matchesSearch = safeName.toLowerCase().includes(searchLower) ||
       String(safeRoll).toLowerCase().includes(searchLower) ||
       safeLevel.toLowerCase().includes(searchLower);
+    
+    const matchesLevel = levelFilter === 'ALL' || safeLevel === levelFilter;
+    const matchesGender = genderFilter === 'ALL' || (safeGender === genderFilter);
+
+    return matchesSearch && matchesLevel && matchesGender;
   }).sort((a, b) => (a.rollNumber || 0) - (b.rollNumber || 0));
 
   return (
@@ -278,15 +312,29 @@ const ViewStudents = () => {
 
       {/* Main Content Area */}
       {selectedSchool ? (
-        <div className="glass-card overflow-hidden">
+        <div className="glass-card">
           {/* List Header */}
-          <div className="bg-slate-50 border-b border-slate-200 px-6 py-4 flex items-center justify-between">
+          <div className="bg-slate-50 border-b border-slate-200 px-6 py-4 flex items-center justify-between rounded-t-2xl">
             <h2 className="font-bold text-slate-800">
               Student List of {schools.find(s => s.schoolId === selectedSchool)?.name || 'Selected School'}
             </h2>
-            <span className="bg-slate-200 text-slate-700 text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap">
-              {filteredStudents.length} Students
-            </span>
+            <div className="flex items-center gap-3">
+              {(levelFilter !== 'ALL' || genderFilter !== 'ALL' || searchQuery) && (
+                <button 
+                  onClick={() => {
+                    setLevelFilter('ALL');
+                    setGenderFilter('ALL');
+                    setSearchQuery('');
+                  }}
+                  className="text-xs font-bold text-primary-600 hover:underline"
+                >
+                  Clear Filters
+                </button>
+              )}
+              <span className="bg-slate-200 text-slate-700 text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap">
+                {filteredStudents.length} Students
+              </span>
+            </div>
           </div>
 
           <div className="p-0">
@@ -300,84 +348,162 @@ const ViewStudents = () => {
                 <h3 className="text-lg font-medium text-slate-700">No Students Found</h3>
                 <p className="text-slate-500 text-sm mt-1">This school doesn't have any enrolled students yet.</p>
               </div>
-            ) : filteredStudents.length === 0 ? (
-              <div className="text-center p-16">
-                <Search size={40} className="mx-auto text-slate-300 mb-4" />
-                <h3 className="text-lg font-medium text-slate-700">No matches found</h3>
-                <p className="text-slate-500 text-sm mt-1">Try adjusting your search query.</p>
-              </div>
             ) : (
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto min-h-[400px]">
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="bg-white border-b border-slate-100">
                       <th className="py-4 px-6 font-semibold text-sm text-slate-500 uppercase tracking-wider">Student Name</th>
-                      <th className="py-4 px-6 font-semibold text-sm text-slate-500 uppercase tracking-wider">Level</th>
+                      <th className="py-4 px-6 font-semibold text-sm text-slate-500 uppercase tracking-wider relative" ref={levelRef}>
+                        <div 
+                          className="flex items-center gap-2 cursor-pointer hover:text-primary-600 transition-colors"
+                          onClick={() => setLevelOpen(!levelOpen)}
+                        >
+                          <span>Level</span>
+                          <Filter size={14} className={levelFilter !== 'ALL' ? 'text-primary-500 fill-primary-50' : 'text-slate-400'} />
+                        </div>
+
+                        {levelOpen && (
+                          <div className="absolute top-full left-6 mt-1 w-40 bg-white border border-slate-100 rounded-xl shadow-xl shadow-slate-200/50 z-50 p-1 animate-in fade-in slide-in-from-top-2 duration-200">
+                            {levelOptions.map(opt => (
+                              <button
+                                key={opt}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setLevelFilter(opt);
+                                  setLevelOpen(false);
+                                }}
+                                className={`w-full text-left px-3 py-2 rounded-lg text-xs font-bold transition-colors ${
+                                  levelFilter === opt 
+                                  ? 'bg-primary-50 text-primary-700' 
+                                  : 'text-slate-600 hover:bg-slate-50'
+                                }`}
+                              >
+                                {opt === 'ALL' ? 'All Levels' : opt}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </th>
                       <th className="py-4 px-6 font-semibold text-sm text-slate-500 uppercase tracking-wider">Roll Number</th>
-                      <th className="py-4 px-6 font-semibold text-sm text-slate-500 uppercase tracking-wider">Gender</th>
+                      <th className="py-4 px-6 font-semibold text-sm text-slate-500 uppercase tracking-wider relative" ref={genderRef}>
+                        <div 
+                          className="flex items-center gap-2 cursor-pointer hover:text-primary-600 transition-colors"
+                          onClick={() => setGenderOpen(!genderOpen)}
+                        >
+                          <span>Gender</span>
+                          <Filter size={14} className={genderFilter !== 'ALL' ? 'text-primary-500 fill-primary-50' : 'text-slate-400'} />
+                        </div>
+
+                        {genderOpen && (
+                          <div className="absolute top-full left-6 mt-1 w-40 bg-white border border-slate-100 rounded-xl shadow-xl shadow-slate-200/50 z-50 p-1 animate-in fade-in slide-in-from-top-2 duration-200">
+                            {genderOptions.map(opt => (
+                              <button
+                                key={opt.id}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setGenderFilter(opt.id);
+                                  setGenderOpen(false);
+                                }}
+                                className={`w-full text-left px-3 py-2 rounded-lg text-xs font-bold transition-colors ${
+                                  genderFilter === opt.id 
+                                  ? 'bg-primary-50 text-primary-700' 
+                                  : 'text-slate-600 hover:bg-slate-50'
+                                }`}
+                              >
+                                {opt.label}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </th>
                       <th className="py-4 px-6 font-semibold text-sm text-slate-500 uppercase tracking-wider">DOB</th>
                       <th className="py-4 px-6 font-semibold text-sm text-slate-500 uppercase tracking-wider">Age</th>
                       <th className="py-4 px-6 font-semibold text-sm text-slate-500 uppercase tracking-wider text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100">
-                    {filteredStudents.map((student, index) => (
-                      <tr key={student.studentId} className={`hover:bg-slate-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-slate-50/30'}`}>
-                        <td className="py-4 px-6">
-                          <div className="flex items-center gap-3">
-                            <div className="h-8 w-8 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center font-bold text-xs uppercase">
-                              {(student.name || '?').charAt(0)}
-                            </div>
-                            <span className="font-medium text-slate-800">{student.name || 'Unknown'}</span>
-                          </div>
-                        </td>
-                        <td className="py-4 px-6 font-semibold text-slate-600 text-xs">
-                           <span className="bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
-                             {student.level || 'N/A'}
-                           </span>
-                        </td>
-                        <td className="py-4 px-6 font-mono text-slate-600">
-                          {student.rollNumber || 'N/A'}
-                        </td>
-                        <td className="py-4 px-6">
-                           <span className={`px-2 py-1 rounded-md text-xs font-semibold ${
-                             student.gender === 'MALE' ? 'bg-blue-50 text-blue-600' : 
-                             student.gender === 'FEMALE' ? 'bg-pink-50 text-pink-600' : 
-                             'bg-slate-50 text-slate-600'
-                           }`}>
-                             {student.gender || 'N/A'}
-                           </span>
-                        </td>
-                        <td className="py-4 px-6 text-slate-600 text-sm">
-                          {student.dob ? new Date(student.dob).toLocaleDateString('en-GB').split('/').join('-') : 'N/A'}
-                        </td>
-                        <td className="py-4 px-6 text-slate-600 text-sm">
-                          {student.age ?? 'N/A'}
-                        </td>
-                        <td className="py-4 px-6 text-right">
-                          <div className="flex items-center justify-end gap-2">
-                            <button
-                              onClick={() => openEditModal(student)}
-                              className="px-3 py-1.5 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors text-xs flex items-center gap-2"
-                            >
-                              Edit <Pencil size={14} />
-                            </button>
-                            <button
-                              onClick={() => openTransferModal(student)}
-                              className="px-3 py-1.5 border border-blue-200 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors text-xs flex items-center gap-2"
-                            >
-                              Transfer <ArrowRightLeft size={14} />
-                            </button>
-                            <button
-                              onClick={() => openDeleteModal(student)}
-                              className="px-3 py-1.5 border border-red-200 rounded-lg text-red-600 hover:bg-red-50 transition-colors text-xs flex items-center gap-2"
-                            >
-                              Delete <Trash2 size={14} />
-                            </button>
+                  <tbody className="divide-y divide-slate-100 bg-white">
+                    {filteredStudents.length === 0 ? (
+                      <tr>
+                        <td colSpan="7" className="py-20 text-center">
+                          <div className="flex flex-col items-center justify-center text-slate-400">
+                            <Search size={48} className="mb-4 opacity-20" />
+                            <p className="text-lg font-medium text-slate-500">No matching records found</p>
+                            <p className="text-sm text-slate-400 mt-1">Try adjusting your filters or search query</p>
+                            {(levelFilter !== 'ALL' || genderFilter !== 'ALL' || searchQuery) && (
+                              <button 
+                                onClick={() => {
+                                  setLevelFilter('ALL');
+                                  setGenderFilter('ALL');
+                                  setSearchQuery('');
+                                }}
+                                className="mt-4 text-primary-600 font-bold text-sm hover:underline"
+                              >
+                                Clear all filters
+                              </button>
+                            )}
                           </div>
                         </td>
                       </tr>
-                    ))}
+                    ) : (
+                      filteredStudents.map((student, index) => (
+                        <tr key={index} className={`hover:bg-slate-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-slate-50/30'}`}>
+                          <td className="py-4 px-6">
+                            <div className="flex items-center gap-3">
+                              <div className="h-8 w-8 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center font-bold text-xs uppercase">
+                                {(student.name || '?').charAt(0)}
+                              </div>
+                              <span className="font-medium text-slate-800">{student.name || 'Unknown'}</span>
+                            </div>
+                          </td>
+                          <td className="py-4 px-6 font-semibold text-slate-600 text-xs">
+                             <span className="bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+                               {student.level || 'N/A'}
+                             </span>
+                          </td>
+                          <td className="py-4 px-6 font-mono text-slate-600">
+                            {student.rollNumber || 'N/A'}
+                          </td>
+                          <td className="py-4 px-6">
+                             <span className={`px-2 py-1 rounded-md text-xs font-semibold ${
+                               student.gender === 'MALE' ? 'bg-blue-50 text-blue-600' : 
+                               student.gender === 'FEMALE' ? 'bg-pink-50 text-pink-600' : 
+                               'bg-slate-50 text-slate-600'
+                             }`}>
+                               {student.gender || 'N/A'}
+                             </span>
+                          </td>
+                          <td className="py-4 px-6 text-slate-600 text-sm">
+                            {student.dob ? new Date(student.dob).toLocaleDateString('en-GB').split('/').join('-') : 'N/A'}
+                          </td>
+                          <td className="py-4 px-6 text-slate-600 text-sm">
+                            {student.age ?? 'N/A'}
+                          </td>
+                          <td className="py-4 px-6 text-right">
+                            <div className="flex items-center justify-end gap-2">
+                              <button
+                                onClick={() => openEditModal(student)}
+                                className="px-3 py-1.5 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors text-xs flex items-center gap-2"
+                              >
+                                Edit <Pencil size={14} />
+                              </button>
+                              <button
+                                onClick={() => openTransferModal(student)}
+                                className="px-3 py-1.5 border border-blue-200 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors text-xs flex items-center gap-2"
+                              >
+                                Transfer <ArrowRightLeft size={14} />
+                              </button>
+                              <button
+                                onClick={() => openDeleteModal(student)}
+                                className="px-3 py-1.5 border border-red-200 rounded-lg text-red-600 hover:bg-red-50 transition-colors text-xs flex items-center gap-2"
+                              >
+                                Delete <Trash2 size={14} />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    )}
                   </tbody>
                 </table>
               </div>
