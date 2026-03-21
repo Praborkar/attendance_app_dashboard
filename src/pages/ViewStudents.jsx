@@ -418,16 +418,12 @@ const ViewStudents = () => {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-2">New School</label>
-                  <select
-                    className="input-field bg-white w-full"
-                    value={transferSchoolId}
-                    onChange={(e) => setTransferSchoolId(e.target.value)}
-                  >
-                    <option value="">-- Select School --</option>
-                    {schools.filter(s => s.schoolId !== selectedSchool).map(s => (
-                      <option key={s.schoolId} value={s.schoolId}>{s.name}</option>
-                    ))}
-                  </select>
+                  <Dropdown
+                    options={schools.filter(s => s.schoolId !== selectedSchool).map(s => ({ id: s.schoolId, label: s.name }))}
+                    selected={transferSchoolId}
+                    onChange={(id) => setTransferSchoolId(id)}
+                    placeholder="-- Select School --"
+                  />
                 </div>
               </div>
             </div>

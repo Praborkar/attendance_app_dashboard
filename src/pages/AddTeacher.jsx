@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { UserPlus, Mail, Phone, School, User } from 'lucide-react';
+import Dropdown from '../components/Dropdown';
 import api from '../api/axiosConfig';
 
 const AddTeacher = () => {
@@ -50,6 +51,13 @@ const AddTeacher = () => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSchoolChange = (schoolId) => {
+    setFormData({
+      ...formData,
+      schoolId: schoolId
     });
   };
 
@@ -124,24 +132,13 @@ const AddTeacher = () => {
               {loadingSchools ? (
                  <div className="h-11 bg-slate-100 rounded-xl animate-pulse"></div>
               ) : (
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-                    <School size={18} />
-                  </div>
-                  <select 
-                    name="schoolId"
-                    className="input-field pl-10 bg-white"
-                    value={formData.schoolId}
-                    onChange={handleChange}
-                  >
-                    <option value="" disabled>-- Choose a School --</option>
-                    {schools.map(s => (
-                      <option key={s.schoolId} value={s.schoolId}>
-                        {s.name} ({s.address})
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                <Dropdown
+                  icon={School}
+                  options={schools.map(s => ({ id: s.schoolId, label: `${s.name} (${s.address})` }))}
+                  selected={formData.schoolId}
+                  onChange={handleSchoolChange}
+                  placeholder="-- Choose a School --"
+                />
               )}
             </div>
 
