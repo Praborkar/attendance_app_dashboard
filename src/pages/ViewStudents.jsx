@@ -208,7 +208,7 @@ const ViewStudents = () => {
     return safeName.toLowerCase().includes(searchLower) ||
       String(safeRoll).toLowerCase().includes(searchLower) ||
       safeLevel.toLowerCase().includes(searchLower);
-  });
+  }).sort((a, b) => (a.rollNumber || 0) - (b.rollNumber || 0));
 
   return (
     <div className="max-w-6xl mx-auto pb-12">

@@ -127,7 +127,7 @@ const DailyAttendance = () => {
         const searchLower = searchQuery.toLowerCase();
         return (record.studentName || '').toLowerCase().includes(searchLower) ||
             String(record.rollNumber || '').includes(searchQuery);
-    });
+    }).sort((a, b) => (a.rollNumber || 0) - (b.rollNumber || 0));
 
     const formatTime = (dateTimeStr) => {
         if (!dateTimeStr) return 'N/A';
