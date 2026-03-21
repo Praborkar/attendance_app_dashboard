@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { School, Building, Plus, Pencil, Trash2, Search, MapPin, Calendar, Clock, AlertTriangle } from 'lucide-react';
+import { School, Building, Plus, Pencil, Trash2, Search, MapPin, Calendar, Clock, AlertTriangle, Users, GraduationCap } from 'lucide-react';
 import api from '../api/axiosConfig';
 import AddSchoolModal from '../components/AddSchoolModal';
 
@@ -46,8 +46,7 @@ const ManageSchools = () => {
 
   const filteredSchools = schools.filter(school => 
     school.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    school.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    school.prefix.toLowerCase().includes(searchQuery.toLowerCase())
+    school.address.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleEdit = (school) => {
@@ -89,14 +88,9 @@ const ManageSchools = () => {
   return (
     <div className="pb-12">
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8">
-        <div className="flex items-start gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Manage Schools</h1>
-            <p className="text-slate-500 text-sm mt-1">View, edit, or register educational institutions.</p>
-          </div>
-          <span className="bg-slate-200 text-slate-700 text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap mt-1 shadow-sm border border-slate-300/30">
-            {schools.length} Schools
-          </span>
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Manage Schools</h1>
+          <p className="text-slate-500 text-sm mt-1">View, edit, or register educational institutions.</p>
         </div>
 
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 lg:flex-1 lg:justify-end max-w-2xl w-full">
@@ -106,10 +100,10 @@ const ManageSchools = () => {
               </div>
               <input
                 type="text"
-                placeholder="Search by name, address or prefix..."
+                placeholder="Search by school name or address..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="input-field pl-10 py-2.5 bg-white border-slate-200 focus:border-primary-400 focus:ring-4 focus:ring-primary-400/10 transition-all rounded-xl w-full"
+                className="input-field pl-10 py-2.5 bg-white border-slate-200 focus:border-primary-400 focus:ring-4 focus:ring-primary-400/10 transition-all rounded-xl w-full text-sm"
               />
             </div>
             <button
@@ -137,22 +131,33 @@ const ManageSchools = () => {
       )}
 
       {/* Schools Table */}
-      <div className="glass-card overflow-hidden bg-white border-slate-200 shadow-sm">
+      <div className="glass-card overflow-hidden bg-white border-slate-200 shadow-sm transition-all duration-300">
+        <div className="bg-slate-50/80 border-b border-slate-100 px-6 py-4 flex items-center justify-between">
+           <h2 className="font-bold text-slate-800 flex items-center gap-2 text-sm">
+             <Building size={16} className="text-slate-400" />
+             School List
+           </h2>
+           <span className="bg-slate-200 text-slate-700 text-[10px] uppercase tracking-wider font-heavy px-2.5 py-1 rounded-full border border-slate-300/30">
+             {schools.length} Schools
+           </span>
+        </div>
+
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50/50 border-b border-slate-100">
-                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">School Details</th>
-                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Prefix</th>
-                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Start Date</th>
-                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Timing</th>
-                <th className="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+              <tr className="bg-white border-b border-slate-100">
+                <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">School Details</th>
+                <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Teachers</th>
+                <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Students</th>
+                <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Start Date</th>
+                <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Timing</th>
+                <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {loading ? (
                 <tr>
-                  <td colSpan="5" className="px-6 py-12 text-center text-slate-400">
+                  <td colSpan="6" className="px-6 py-12 text-center text-slate-400">
                     <div className="flex flex-col items-center gap-2">
                        <div className="h-8 w-8 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
                        <p className="text-sm font-medium">Loading schools...</p>
@@ -161,7 +166,7 @@ const ManageSchools = () => {
                 </tr>
               ) : filteredSchools.length === 0 ? (
                 <tr>
-                  <td colSpan="5" className="px-6 py-12 text-center text-slate-400">
+                  <td colSpan="6" className="px-6 py-12 text-center text-slate-400">
                     <div className="flex flex-col items-center gap-2">
                        <School size={48} className="opacity-20 mb-2" />
                        <p className="text-lg font-bold text-slate-400">No schools found</p>
@@ -174,25 +179,32 @@ const ManageSchools = () => {
                   <tr key={school.schoolId} className="hover:bg-slate-50/50 transition-colors group">
                     <td className="px-6 py-4">
                       <div className="flex flex-col">
-                        <span className="font-bold text-slate-800 text-sm group-hover:text-primary-600 transition-colors uppercase">{school.name}</span>
-                        <div className="flex items-center gap-1.5 text-xs text-slate-500 mt-1">
-                          <MapPin size={12} />
+                        <span className="font-bold text-slate-800 text-sm group-hover:text-primary-600 transition-colors uppercase tracking-tight">{school.name}</span>
+                        <div className="flex items-center gap-1.5 text-[11px] text-slate-500 mt-1">
+                          <MapPin size={12} className="shrink-0" />
                           <span className="truncate max-w-[200px]">{school.address}</span>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="px-2.5 py-1 rounded-md bg-slate-100 text-slate-600 text-xs font-bold">
-                        {school.prefix}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <Users size={14} className="text-blue-400" />
+                        <span className="text-sm font-bold text-slate-700">{school.teacherCount || 0}</span>
+                      </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-2 text-sm text-slate-600 font-medium">
+                      <div className="flex items-center gap-2">
+                        <GraduationCap size={14} className="text-purple-400" />
+                        <span className="text-sm font-bold text-slate-700">{school.studentCount || 0}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2 text-xs text-slate-600 font-medium">
                         <Calendar size={14} className="text-slate-400" />
                         {school.startDate ? school.startDate.split('-').reverse().join('-') : 'N/A'}
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-sm text-slate-600 font-medium">
+                    <td className="px-6 py-4 text-xs text-slate-600 font-medium whitespace-nowrap">
                        <div className="flex items-center gap-2">
                           <Clock size={14} className="text-slate-400" />
                           <span>{school.startTime} - {school.endTime}</span>
