@@ -16,8 +16,7 @@ const DashboardLayout = () => {
 
   const navItems = [
     { name: 'Dashboard Reports', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
-    { name: 'Student Attendance', path: '/attendance', icon: <Fingerprint size={20} /> },
-    { name: 'Teacher Attendance', path: '/teacher-attendance', icon: <Fingerprint size={20} /> },
+    { name: 'Attendance Reports', path: '/attendance', icon: <Fingerprint size={20} /> },
     { name: 'Manage Students', path: '/manage-students', icon: <GraduationCap size={20} /> },
     { name: 'Manage Teachers', path: '/manage-teachers', icon: <Users size={20} /> },
     { name: 'Manage Schools', path: '/manage-schools', icon: <School size={20} /> },
@@ -83,7 +82,7 @@ const DashboardLayout = () => {
 
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto p-4 md:p-8 relative">
+        <main className="flex-1 overflow-y-auto relative">
           <Outlet />
         </main>
       </div>

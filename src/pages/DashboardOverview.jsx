@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { School, Users, UserCheck, PlusCircle, UserPlus, Upload, ChevronRight, GraduationCap, Download, FileSpreadsheet, AlertTriangle } from 'lucide-react';
+import { School, Users, UserCheck, PlusCircle, UserPlus, Upload, ChevronLeft, ChevronRight, GraduationCap, Download, FileSpreadsheet, AlertTriangle } from 'lucide-react';
 import api from '../api/axiosConfig';
 
 const DashboardOverview = () => {
@@ -57,7 +57,9 @@ const DashboardOverview = () => {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
-      const fileName = type === 'school' ? `attendance_report_${schoolName}_${selectedDate}.xlsx` : `attendance_consolidated_${selectedDate}.xlsx`;
+      const fileName = type === 'school' 
+        ? `attendance_report_${schoolName}_${selectedDate}.xlsx` 
+        : `attendance_report_consolidated_${selectedDate}.xlsx`;
       link.setAttribute('download', fileName);
       document.body.appendChild(link);
       link.click();
@@ -68,6 +70,12 @@ const DashboardOverview = () => {
       setExportingSchool(null);
       setExportingConsolidated(false);
     }
+  };
+
+  const changeDate = (days) => {
+    const date = new Date(selectedDate);
+    date.setDate(date.getDate() + days);
+    setSelectedDate(date.toISOString().split('T')[0]);
   };
 
   const StatCard = ({ title, value, icon: Icon, colorClass, borderClass, path }) => (
@@ -108,7 +116,7 @@ const DashboardOverview = () => {
   );
 
   return (
-    <div className="pb-12 max-w-7xl mx-auto">
+    <div className="max-w-[1600px] mx-auto p-4 md:p-8 pb-12">
       <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">System Dashboard</h1>
@@ -198,12 +206,30 @@ const DashboardOverview = () => {
           <div className="flex items-center gap-4">
             <div className="flex flex-col sm:flex-row sm:items-center gap-2">
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Viewing Data For:</span>
-              <input 
-                type="date" 
-                value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)}
-                className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all"
-              />
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => changeDate(-1)}
+                  className="p-1.5 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors text-slate-600 shadow-sm"
+                >
+                  <ChevronLeft size={16} />
+                </button>
+                <div className="relative">
+                  <input 
+                    type="date" 
+                    value={selectedDate}
+                    onChange={(e) => setSelectedDate(e.target.value)}
+                    max={new Date().toISOString().split('T')[0]}
+                    className="bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all shadow-sm uppercase tracking-wider"
+                  />
+                </div>
+                <button
+                  onClick={() => changeDate(1)}
+                  disabled={selectedDate === new Date().toISOString().split('T')[0]}
+                  className="p-1.5 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors text-slate-600 shadow-sm disabled:opacity-30 disabled:cursor-not-allowed"
+                >
+                  <ChevronRight size={16} />
+                </button>
+              </div>
             </div>
             
             <button 

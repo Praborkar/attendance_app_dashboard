@@ -103,60 +103,65 @@ const ManageSchools = () => {
   };
 
   return (
-    <div className="pb-12">
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Manage Schools</h1>
-          <p className="text-slate-500 text-sm mt-1">View, edit, or register educational institutions.</p>
-        </div>
-
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 lg:flex-1 lg:justify-end max-w-2xl w-full">
-           <div className="relative flex-1 group">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary-500 transition-colors">
-                <Search size={18} />
-              </div>
-              <input
-                type="text"
-                placeholder="Search by school name or address..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-10 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 text-sm font-medium transition-all bg-white"
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery('')}
-                  className="absolute inset-y-0 right-3 my-auto text-slate-400 hover:text-slate-600 transition-colors"
-                  title="Clear search"
-                >
-                  <X size={18} />
-                </button>
-              )}
+    <div className="pb-12 px-4 md:px-8 max-w-[1600px] mx-auto text-slate-900">
+      {/* Sticky Header Section */}
+      <div className="sticky top-0 z-50 bg-slate-50 border-b border-slate-200/50 mb-8 transition-all duration-200">
+        <div className="py-8 pb-4">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+            <div>
+              <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Manage Schools</h1>
+              <p className="text-slate-500 text-sm mt-1">View, edit, or register educational institutions.</p>
             </div>
-            <button
-              onClick={handleAddNew}
-              className="flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-bold text-white bg-primary-600 hover:bg-primary-700 shadow-lg shadow-primary-600/20 transition-all whitespace-nowrap"
-            >
-              <Plus size={20} />
-              Register New School
-            </button>
+
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 lg:flex-1 lg:justify-end max-w-2xl w-full">
+              <div className="relative flex-1 group">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary-500 transition-colors">
+                  <Search size={18} />
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search by school name or address..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-10 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 text-sm font-medium transition-all bg-white"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="absolute inset-y-0 right-3 my-auto text-slate-400 hover:text-slate-600 transition-colors"
+                    title="Clear search"
+                  >
+                    <X size={18} />
+                  </button>
+                )}
+              </div>
+              <button
+                onClick={handleAddNew}
+                className="btn-primary flex-none flex items-center justify-center gap-2 px-6 py-2.5 shadow-primary-600/20"
+              >
+                <Plus size={20} /> Register New School
+              </button>
+            </div>
+          </div>
+
+          {/* Alerts within Sticky Section */}
+          {error && (
+            <div className="mt-6 p-4 bg-red-50 text-red-600 rounded-xl border border-red-100 font-medium text-sm flex items-center gap-2 animate-in slide-in-from-top-2">
+              <AlertTriangle size={18} />
+              {error}
+            </div>
+          )}
+          {success && (
+            <div className="mt-6 p-4 bg-green-50 text-green-700 rounded-xl border border-green-200 font-medium text-sm flex items-center gap-2 animate-in slide-in-from-top-2">
+              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+              {success}
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Alerts */}
-      {error && (
-        <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-xl border border-red-100 font-medium text-sm flex items-center gap-2 animate-in slide-in-from-top-2">
-          <AlertTriangle size={18} />
-          {error}
-        </div>
-      )}
-      {success && (
-        <div className="mb-6 p-4 bg-green-50 text-green-700 rounded-xl border border-green-200 font-medium text-sm flex items-center gap-2 animate-in slide-in-from-top-2">
-          <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-          {success}
-        </div>
-      )}
-
-      {/* Schools Table */}
+      <div className="space-y-8">
+        {/* Schools Grid/Table Section */}
       <div className="glass-card overflow-hidden bg-white border-slate-200 shadow-sm transition-all duration-300">
         <div className="bg-slate-50/50 border-b border-slate-100 px-6 py-4 flex items-center justify-between">
            <h2 className="font-bold text-slate-800 flex items-center gap-2 text-sm">
@@ -177,7 +182,7 @@ const ManageSchools = () => {
                 <th className="px-6 py-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Students</th>
                 <th className="px-6 py-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Start Date</th>
                 <th className="px-6 py-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider text-center">Timing</th>
-                <th className="px-6 py-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+                <th className="px-6 py-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider text-center">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 font-medium text-sm">
@@ -239,8 +244,8 @@ const ManageSchools = () => {
                           <span>{formatTime12h(school.startTime)} - {formatTime12h(school.endTime)}</span>
                        </div>
                     </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
+                    <td className="px-6 py-4 text-center">
+                      <div className="flex items-center justify-center gap-2">
                         <button
                           onClick={() => handleEdit(school)}
                           className="px-3 py-1.5 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-100 transition-all text-xs flex items-center gap-2 font-bold"
@@ -309,6 +314,7 @@ const ManageSchools = () => {
            </div>
         </div>
       )}
+      </div>
     </div>
   );
 };

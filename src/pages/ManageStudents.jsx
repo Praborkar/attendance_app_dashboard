@@ -245,25 +245,77 @@ const ManageStudents = () => {
   }).sort((a, b) => (a.rollNumber || 0) - (b.rollNumber || 0));
 
   return (
-    <div className="max-w-6xl mx-auto pb-12">
-      <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Manage Students</h1>
-          <p className="text-slate-500 text-sm mt-1">View, search, and manage student records across all schools.</p>
+    <div className="pb-12 px-4 md:px-8 max-w-[1600px] mx-auto text-slate-900">
+      {/* Sticky Header Section */}
+      <div className="sticky top-0 z-50 bg-slate-50 border-b border-slate-200/50 mb-8 transition-all duration-200">
+        <div className="py-8 pb-4">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+            <div>
+              <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Manage Students</h1>
+              <p className="text-slate-500 text-sm mt-1">View, search, and manage student records across all schools.</p>
+            </div>
+            <button
+              onClick={() => setShowBulkModal(true)}
+              className="btn-primary flex items-center gap-2 px-5 py-2.5 text-sm"
+            >
+              <Upload size={16} /> Bulk Upload CSV
+            </button>
+          </div>
+
+          {error && (
+            <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-xl border border-red-100 font-medium text-sm animate-in slide-in-from-top-2">
+              {error}
+            </div>
+          )}
+
+          {/* Controls Bar */}
+          <div className="glass-card p-6 flex flex-col md:flex-row gap-4 items-end relative z-20">
+            <div className="w-full md:w-1/2 min-w-0">
+              <label className="block text-sm font-semibold text-slate-700 mb-2 whitespace-nowrap">Select School Filter</label>
+              {loadingSchools ? (
+                <div className="h-11 w-full bg-slate-100 rounded-xl animate-pulse"></div>
+              ) : (
+                <Dropdown
+                  icon={School}
+                  options={schools.map(s => ({ id: s.schoolId, label: `${s.name} (${s.address})` }))}
+                  selected={selectedSchool}
+                  onChange={(id) => setSelectedSchool(id)}
+                  placeholder="-- Choose a School --"
+                />
+              )}
+            </div>
+
+            <div className="w-full md:w-1/2 min-w-0">
+              <label className="block text-sm font-semibold text-slate-700 mb-2">Search Students</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                  <Search size={18} />
+                </div>
+                <input
+                  type="text"
+                  className="input-field !pl-10 !pr-10 bg-white"
+                  placeholder="Search by name or roll number..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  disabled={!selectedSchool || students.length === 0}
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="absolute inset-y-0 right-3 my-auto text-slate-400 hover:text-slate-600 transition-colors"
+                    title="Clear search"
+                  >
+                    <X size={18} />
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
-        <button
-          onClick={() => setShowBulkModal(true)}
-          className="btn-primary flex items-center gap-2 px-5 py-2.5 text-sm"
-        >
-          <Upload size={16} /> Bulk Upload CSV
-        </button>
       </div>
 
-      {error && (
-        <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-xl border border-red-100 font-medium text-sm">
-          {error}
-        </div>
-      )}
+      <div className="space-y-8 mt-4">
+        {/* Floating Toast Message */}
 
       {/* Floating Toast Message */}
       {success && (
@@ -274,50 +326,6 @@ const ManageStudents = () => {
           </div>
         </div>
       )}
-
-      {/* Controls Bar */}
-      <div className="glass-card p-6 mb-8 flex flex-col md:flex-row gap-4 items-end relative z-20">
-        <div className="w-full md:w-1/2 min-w-0">
-          <label className="block text-sm font-semibold text-slate-700 mb-2 whitespace-nowrap">Select School Filter</label>
-          {loadingSchools ? (
-            <div className="h-11 w-full bg-slate-100 rounded-xl animate-pulse"></div>
-          ) : (
-            <Dropdown
-              icon={School}
-              options={schools.map(s => ({ id: s.schoolId, label: `${s.name} (${s.address})` }))}
-              selected={selectedSchool}
-              onChange={(id) => setSelectedSchool(id)}
-              placeholder="-- Choose a School --"
-            />
-          )}
-        </div>
-
-        <div className="w-full md:w-1/2 min-w-0">
-          <label className="block text-sm font-semibold text-slate-700 mb-2">Search Students</label>
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-              <Search size={18} />
-            </div>
-            <input
-              type="text"
-              className="input-field !pl-10 !pr-10 bg-white"
-              placeholder="Search by name or roll number..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              disabled={!selectedSchool || students.length === 0}
-            />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery('')}
-                className="absolute inset-y-0 right-3 my-auto text-slate-400 hover:text-slate-600 transition-colors"
-                title="Clear search"
-              >
-                <X size={18} />
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
 
       {/* Main Content Area */}
       {selectedSchool ? (
@@ -362,14 +370,19 @@ const ManageStudents = () => {
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="bg-white border-b border-slate-100">
-                      <th className="py-4 px-6 font-semibold text-sm text-slate-500 uppercase tracking-wider">Student Name</th>
-                      <th className="py-4 px-6 font-semibold text-sm text-slate-500 uppercase tracking-wider relative" ref={levelRef}>
+                      <th className="py-4 px-6 font-semibold text-sm text-slate-500 uppercase tracking-wider w-[25%]">Student Name</th>
+                      <th className="py-4 px-6 font-semibold text-sm text-slate-500 uppercase tracking-wider relative w-[12%]" ref={levelRef}>
                         <div 
                           className="flex items-center gap-2 cursor-pointer hover:text-primary-600 transition-colors"
                           onClick={() => setLevelOpen(!levelOpen)}
                         >
                           <span>Level</span>
-                          <Filter size={14} className={levelFilter !== 'ALL' ? 'text-primary-500 fill-primary-50' : 'text-slate-400'} />
+                          <div className="relative">
+                            <Filter size={14} className={levelFilter !== 'ALL' ? 'text-primary-500 fill-primary-50' : 'text-slate-400'} />
+                            {levelFilter !== 'ALL' && (
+                              <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full border border-white" />
+                            )}
+                          </div>
                         </div>
 
                         {levelOpen && (
@@ -394,14 +407,19 @@ const ManageStudents = () => {
                           </div>
                         )}
                       </th>
-                      <th className="py-4 px-6 font-semibold text-sm text-slate-500 uppercase tracking-wider">Roll Number</th>
-                      <th className="py-4 px-6 font-semibold text-sm text-slate-500 uppercase tracking-wider relative" ref={genderRef}>
+                      <th className="py-4 px-6 font-semibold text-sm text-slate-500 uppercase tracking-wider w-[12%]">Roll No</th>
+                      <th className="py-4 px-6 font-semibold text-sm text-slate-500 uppercase tracking-wider relative w-[12%]" ref={genderRef}>
                         <div 
                           className="flex items-center gap-2 cursor-pointer hover:text-primary-600 transition-colors"
                           onClick={() => setGenderOpen(!genderOpen)}
                         >
                           <span>Gender</span>
-                          <Filter size={14} className={genderFilter !== 'ALL' ? 'text-primary-500 fill-primary-50' : 'text-slate-400'} />
+                          <div className="relative">
+                            <Filter size={14} className={genderFilter !== 'ALL' ? 'text-primary-500 fill-primary-50' : 'text-slate-400'} />
+                            {genderFilter !== 'ALL' && (
+                              <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full border border-white" />
+                            )}
+                          </div>
                         </div>
 
                         {genderOpen && (
@@ -426,9 +444,9 @@ const ManageStudents = () => {
                           </div>
                         )}
                       </th>
-                      <th className="py-4 px-6 font-semibold text-sm text-slate-500 uppercase tracking-wider">DOB</th>
-                      <th className="py-4 px-6 font-semibold text-sm text-slate-500 uppercase tracking-wider">Age</th>
-                      <th className="py-4 px-6 font-semibold text-sm text-slate-500 uppercase tracking-wider text-right">Actions</th>
+                      <th className="py-4 px-6 font-semibold text-sm text-slate-500 uppercase tracking-wider w-[12%]">DOB</th>
+                      <th className="py-4 px-6 font-semibold text-sm text-slate-500 uppercase tracking-wider w-[8%]">Age</th>
+                      <th className="py-4 px-6 font-semibold text-sm text-slate-500 uppercase tracking-wider text-center w-[19%]">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 bg-white">
@@ -488,19 +506,19 @@ const ManageStudents = () => {
                           <td className="py-4 px-6 text-slate-600 text-sm">
                             {student.age ?? 'N/A'}
                           </td>
-                          <td className="py-4 px-6 text-right">
-                            <div className="flex items-center justify-end gap-2">
-                              <button
-                                onClick={() => openEditModal(student)}
-                                className="px-3 py-1.5 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors text-xs flex items-center gap-2 font-bold"
-                              >
-                                <Pencil size={14} /> Edit
-                              </button>
+                          <td className="py-4 px-6 text-center">
+                            <div className="flex items-center justify-center gap-2">
                               <button
                                 onClick={() => openTransferModal(student)}
                                 className="px-3 py-1.5 border border-blue-200 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors text-xs flex items-center gap-2 font-bold"
                               >
                                 <ArrowRightLeft size={14} /> Transfer
+                              </button>
+                              <button
+                                onClick={() => openEditModal(student)}
+                                className="px-3 py-1.5 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors text-xs flex items-center gap-2 font-bold"
+                              >
+                                <Pencil size={14} /> Edit
                               </button>
                               <button
                                 onClick={() => openDeleteModal(student)}
@@ -802,6 +820,7 @@ const ManageStudents = () => {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 };

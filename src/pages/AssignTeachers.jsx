@@ -193,18 +193,20 @@ const AssignTeachers = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto pb-12 relative">
+    <div className="pb-12 px-4 md:p-8 max-w-[1600px] mx-auto">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Assign Teachers</h1>
         <p className="text-slate-500 text-sm mt-1">Manage teacher deployments across schools.</p>
       </div>
 
-      {error && (
-        <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-xl border border-red-100 font-medium text-sm">
-          {error}
-        </div>
-      )}
-
+        {/* Alerts */}
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-xl border border-red-100 font-medium text-sm flex items-center gap-2 animate-in slide-in-from-top-2">
+            <AlertTriangle size={18} />
+            {error}
+          </div>
+        )}
+      
       {/* Floating Toast Message */}
       {success && (
         <div className="fixed bottom-6 right-6 z-50 animate-in slide-in-from-bottom-5 fade-in duration-300">

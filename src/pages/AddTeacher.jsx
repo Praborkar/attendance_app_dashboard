@@ -100,22 +100,23 @@ const AddTeacher = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto pb-12">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Add New Teacher</h1>
-        <p className="text-slate-500 text-sm mt-1">Create a new teacher account and assign to a school.</p>
-      </div>
-
-      <div className="glass-card">
-        <div className="bg-slate-50 border-b border-slate-100 p-6 flex items-center gap-4">
-          <div className="h-12 w-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center">
-             <UserPlus size={24} />
-          </div>
-          <div>
-            <h2 className="font-bold text-slate-800 text-lg">Teacher Details</h2>
-            <p className="text-sm text-slate-500">Enter the credentials for the new teacher.</p>
-          </div>
+    <div className="pb-12 px-4 md:p-8 max-w-[1600px] mx-auto">
+      <div className="max-w-4xl mx-auto">
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Add New Teacher</h1>
+          <p className="text-slate-500 text-sm mt-1">Create a new teacher account and assign to a school.</p>
         </div>
+
+        <div className="glass-card">
+          <div className="bg-slate-50 border-b border-slate-100 p-6 flex items-center gap-4">
+            <div className="h-12 w-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center">
+               <UserPlus size={24} />
+            </div>
+            <div>
+              <h2 className="font-bold text-slate-800">Teacher Details</h2>
+              <p className="text-xs text-slate-500">Enter personal and contact information.</p>
+            </div>
+          </div>
 
         <div className="p-8">
           {error && (
@@ -224,6 +225,7 @@ const AddTeacher = () => {
         </div>
       </div>
     </div>
+  </div>
   );
 };
 
