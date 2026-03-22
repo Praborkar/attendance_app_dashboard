@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { User, Users, Plus, Pencil, Trash2, Search, Mail, Phone, Calendar, School, AlertTriangle, CheckCircle2, X, Fingerprint } from 'lucide-react';
+import { User, Users, Plus, Pencil, Trash2, Search, Mail, Phone, Calendar, School, AlertTriangle, CheckCircle2, X, Fingerprint, ArrowRightLeft, Clock } from 'lucide-react';
 import api from '../api/axiosConfig';
 import TeacherModal from '../components/TeacherModal';
+import Dropdown from '../components/Dropdown';
 
 const ManageTeachers = () => {
   const [teachers, setTeachers] = useState([]);
@@ -17,6 +18,13 @@ const ManageTeachers = () => {
   const [teacherToDelete, setTeacherToDelete] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
 
+  // Transfer states
+  const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
+  const [teacherToTransfer, setTeacherToTransfer] = useState(null);
+  const [transferSchoolId, setTransferSchoolId] = useState('');
+  const [transferLoading, setTransferLoading] = useState(false);
+  const [schools, setSchools] = useState([]);
+
   const fetchTeachers = async () => {
     setLoading(true);
     try {
@@ -29,8 +37,18 @@ const ManageTeachers = () => {
     }
   };
 
+  const fetchSchools = async () => {
+    try {
+      const res = await api.get('/schools');
+      setSchools(res.data || []);
+    } catch (err) {
+      console.error('Failed to fetch schools:', err);
+    }
+  };
+
   useEffect(() => {
     fetchTeachers();
+    fetchSchools();
   }, []);
 
   // Auto-dismiss alerts
@@ -78,6 +96,30 @@ const ManageTeachers = () => {
       setError(err.response?.data?.message || 'Failed to delete teacher account.');
     } finally {
       setDeleteLoading(false);
+    }
+  };
+
+  const handleTransferClick = (teacher) => {
+    setTeacherToTransfer(teacher);
+    setTransferSchoolId('');
+    setIsTransferModalOpen(true);
+  };
+
+  const confirmTransfer = async () => {
+    if (!transferSchoolId || !teacherToTransfer) return;
+    setTransferLoading(true);
+    try {
+      await api.put(`/admin/teachers/${teacherToTransfer.id}/transfer`, {
+        newSchoolId: transferSchoolId
+      });
+      setSuccess(`Teacher '${teacherToTransfer.name}' transferred successfully.`);
+      fetchTeachers();
+      setIsTransferModalOpen(false);
+      setTeacherToTransfer(null);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to transfer teacher.');
+    } finally {
+      setTransferLoading(false);
     }
   };
 
@@ -173,7 +215,6 @@ const ManageTeachers = () => {
                 <th className="px-6 py-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Contact Info</th>
                 <th className="px-6 py-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Assigned School</th>
                 <th className="px-6 py-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Joined On</th>
-                <th className="px-6 py-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider text-center">Status</th>
                 <th className="px-6 py-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wider text-right">Actions</th>
               </tr>
             </thead>
@@ -207,7 +248,6 @@ const ManageTeachers = () => {
                         </div>
                         <div className="flex flex-col">
                           <span className="font-bold text-slate-800 text-sm group-hover:text-primary-600 transition-colors uppercase tracking-tight">{teacher.name}</span>
-                          <span className="text-[10px] text-slate-400 font-mono tracking-wider">#{teacher.id.substring(0, 8)}</span>
                         </div>
                       </div>
                     </td>
@@ -239,19 +279,15 @@ const ManageTeachers = () => {
                         {formatDate(teacher.createdAt)}
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-center">
-                       {teacher.approved ? (
-                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold uppercase tracking-wider border border-emerald-200">
-                           <CheckCircle2 size={10} /> Active
-                         </span>
-                       ) : (
-                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 text-[10px] font-bold uppercase tracking-wider border border-amber-200">
-                           <Clock size={10} /> Pending
-                         </span>
-                       )}
-                    </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
+                        <button
+                          onClick={() => handleTransferClick(teacher)}
+                          className="px-3 py-1.5 border border-blue-200 rounded-lg text-blue-600 hover:bg-blue-50 transition-all text-xs flex items-center gap-2 font-bold"
+                          title="Transfer to another school"
+                        >
+                          <ArrowRightLeft size={14} /> Transfer
+                        </button>
                         <button
                           onClick={() => handleEdit(teacher)}
                           className="px-3 py-1.5 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-100 transition-all text-xs flex items-center gap-2 font-bold"
@@ -318,6 +354,63 @@ const ManageTeachers = () => {
                 </div>
              </div>
            </div>
+        </div>
+      )}
+
+      {/* Transfer Modal */}
+      {isTransferModalOpen && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center px-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md animate-in zoom-in-95 duration-200">
+            <div className="p-6">
+              <div className="flex items-start justify-between mb-4">
+                <div className="h-12 w-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                  <ArrowRightLeft size={24} />
+                </div>
+                <button
+                  onClick={() => setIsTransferModalOpen(false)}
+                  className="text-slate-400 hover:text-slate-600 hover:bg-slate-100 p-1.5 rounded-lg transition-colors"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-2">Transfer Teacher</h3>
+              <p className="text-slate-500 text-sm mb-6">
+                Transfer <span className="font-semibold text-slate-700">{teacherToTransfer?.name}</span> to another school.
+              </p>
+
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-2">New Target School</label>
+                <Dropdown
+                  options={schools.filter(s => s.name !== teacherToTransfer?.schoolName).map(s => ({ id: s.schoolId, label: s.name }))}
+                  selected={transferSchoolId}
+                  onChange={(id) => setTransferSchoolId(id)}
+                  placeholder="-- Select School --"
+                />
+              </div>
+            </div>
+            <div className="bg-slate-50 px-6 py-4 flex items-center justify-end gap-3 border-t border-slate-100">
+              <button
+                onClick={() => setIsTransferModalOpen(false)}
+                disabled={transferLoading}
+                className="px-4 py-2 font-medium text-slate-600 hover:bg-slate-100 rounded-xl transition-colors text-sm"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmTransfer}
+                disabled={transferLoading || !transferSchoolId}
+                className="px-6 py-2 font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-xl shadow-blue-600/20 rounded-xl transition-all disabled:opacity-50 flex items-center gap-2"
+              >
+                {transferLoading ? (
+                   <div className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                ) : (
+                  <>
+                    <ArrowRightLeft size={14} /> Transfer Teacher
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

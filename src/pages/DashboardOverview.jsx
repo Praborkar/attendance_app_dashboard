@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { School, Users, UserCheck, PlusCircle, UserPlus, Upload, ChevronRight, GraduationCap } from 'lucide-react';
+import { School, Users, UserCheck, PlusCircle, UserPlus, Upload, ChevronRight, GraduationCap, Download, FileSpreadsheet, AlertTriangle } from 'lucide-react';
 import api from '../api/axiosConfig';
 
 const DashboardOverview = () => {
@@ -14,6 +14,8 @@ const DashboardOverview = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const [exportingConsolidated, setExportingConsolidated] = useState(false);
+  const [exportingSchool, setExportingSchool] = useState(null);
 
   useEffect(() => {
     fetchStats();
@@ -36,6 +38,35 @@ const DashboardOverview = () => {
       setError('Failed to load dashboard statistics.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleExport = async (type, schoolId = null, schoolName = '') => {
+    try {
+      if (type === 'school') setExportingSchool(schoolId);
+      else setExportingConsolidated(true);
+      
+      const endpoint = type === 'school' ? '/reports/export/school' : '/reports/export/consolidated';
+      const params = type === 'school' ? { schoolId, date: selectedDate } : { date: selectedDate };
+
+      const response = await api.get(endpoint, {
+        params,
+        responseType: 'blob'
+      });
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      const fileName = type === 'school' ? `attendance_report_${schoolName}_${selectedDate}.xlsx` : `attendance_consolidated_${selectedDate}.xlsx`;
+      link.setAttribute('download', fileName);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (err) {
+      setError('Failed to export Excel report.');
+    } finally {
+      setExportingSchool(null);
+      setExportingConsolidated(false);
     }
   };
 
@@ -90,14 +121,17 @@ const DashboardOverview = () => {
       </div>
 
       {error && (
-        <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-xl border border-red-100 flex items-center justify-between shadow-sm">
-          <span className="font-medium text-sm">{error}</span>
+        <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-xl border border-red-100 flex items-center justify-between shadow-sm animate-in slide-in-from-top-2">
+          <div className="flex items-center gap-2">
+            <AlertTriangle size={18} />
+            <span className="font-medium text-sm">{error}</span>
+          </div>
           <button onClick={fetchStats} className="text-xs font-bold underline hover:text-red-800">Retry Loading</button>
         </div>
       )}
 
       {/* Main Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 border-b border-slate-100 pb-8">
         <StatCard 
           title="Total Schools" 
           value={stats.totalSchools} 
@@ -125,7 +159,7 @@ const DashboardOverview = () => {
       </div>
 
       {/* Quick Actions Runner */}
-      <div className="mb-8">
+      <div className="mb-8 border-b border-slate-100 pb-8">
         <h2 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
           Quick Management Actions
         </h2>
@@ -142,7 +176,7 @@ const DashboardOverview = () => {
             subtitle="Review or hire staff" 
             icon={UserPlus} 
             color="bg-emerald-50 text-emerald-600"
-            onClick={() => navigate('/add-teacher')}
+            onClick={() => navigate('/manage-teachers')}
           />
           <QuickAction 
             title="Bulk Upload Students" 
@@ -171,27 +205,34 @@ const DashboardOverview = () => {
                 className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all"
               />
             </div>
+            
             <button 
-              onClick={fetchStats}
-              className="p-2 text-slate-400 hover:text-primary-600 hover:bg-slate-50 rounded-lg transition-all"
-              title="Refresh Data"
+              onClick={() => handleExport('consolidated')}
+              disabled={exportingConsolidated}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-800 text-white font-bold text-xs hover:bg-slate-900 transition-all shadow-lg shadow-slate-800/20 disabled:opacity-50`}
+              title="Download Global Consolidated Report"
             >
-              <Users size={18} />
+              {exportingConsolidated ? (
+                <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
+                <FileSpreadsheet size={16} />
+              )}
+              Consolidated Report
             </button>
           </div>
         </div>
 
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto min-h-[400px]">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-slate-50/50">
-                <th className="py-4 px-6 font-semibold text-xs text-slate-500 uppercase tracking-wider">School Name</th>
-                <th className="py-4 px-6 font-semibold text-xs text-slate-500 uppercase tracking-wider">Students (Today)</th>
-                <th className="py-4 px-6 font-semibold text-xs text-slate-500 uppercase tracking-wider">Teachers (Today)</th>
-                <th className="py-4 px-6 font-semibold text-xs text-slate-500 uppercase tracking-wider">Overall Status</th>
+                <th className="py-4 px-6 font-semibold text-[11px] text-slate-500 uppercase tracking-wider">School Name</th>
+                <th className="py-4 px-6 font-semibold text-[11px] text-slate-500 uppercase tracking-wider">Students Attendance</th>
+                <th className="py-4 px-6 font-semibold text-[11px] text-slate-500 uppercase tracking-wider">Teachers Attendance</th>
+                <th className="py-4 px-6 font-semibold text-[11px] text-slate-500 uppercase tracking-wider text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 bg-white">
+            <tbody className="divide-y divide-slate-100 bg-white text-sm font-medium">
               {loading ? (
                 [1, 2, 3].map(i => (
                   <tr key={i}>
@@ -219,12 +260,12 @@ const DashboardOverview = () => {
                   return (
                     <tr key={school.schoolId} className="hover:bg-slate-50/50 transition-colors group">
                       <td className="py-4 px-6">
-                        <p className="font-bold text-slate-800 text-sm group-hover:text-primary-600 transition-colors">{school.schoolName}</p>
+                        <p className="font-bold text-slate-800 group-hover:text-primary-600 transition-colors uppercase tracking-tight">{school.schoolName}</p>
                       </td>
                       <td className="py-4 px-6">
                         <div className="flex flex-col gap-1.5">
                           <div className="flex items-center justify-between text-[10px] font-bold">
-                            <span className="text-slate-600">{school.presentStudents} / {school.totalStudents} Present</span>
+                            <span className="text-slate-600 uppercase italic">{school.presentStudents} / {school.totalStudents} Present</span>
                             <span className={studentPercent > 80 ? 'text-emerald-600' : 'text-slate-400'}>{studentPercent}%</span>
                           </div>
                           <div className="w-32 h-1.5 bg-slate-100 rounded-full overflow-hidden">
@@ -238,7 +279,7 @@ const DashboardOverview = () => {
                       <td className="py-4 px-6">
                         <div className="flex flex-col gap-1.5">
                           <div className="flex items-center justify-between text-[10px] font-bold">
-                            <span className="text-slate-600">{school.presentTeachers} / {school.totalTeachers} Present</span>
+                            <span className="text-slate-600 uppercase italic">{school.presentTeachers} / {school.totalTeachers} Present</span>
                             <span className={teacherPercent > 80 ? 'text-emerald-600' : 'text-slate-400'}>{teacherPercent}%</span>
                           </div>
                           <div className="w-32 h-1.5 bg-slate-100 rounded-full overflow-hidden">
@@ -249,16 +290,20 @@ const DashboardOverview = () => {
                           </div>
                         </div>
                       </td>
-                      <td className="py-4 px-6">
-                        <div className="flex items-center gap-2">
-                           <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider ${
-                             (studentPercent > 50 || school.totalStudents === 0) 
-                             ? 'bg-emerald-50 text-emerald-600' 
-                             : 'bg-amber-50 text-amber-600'
-                           }`}>
-                             {(studentPercent > 50 || school.totalStudents === 0) ? 'ACTIVE' : 'LOW ATTENDANCE'}
-                           </span>
-                        </div>
+                      <td className="py-4 px-6 text-right">
+                        <button
+                          onClick={() => handleExport('school', school.schoolId, school.schoolName)}
+                          disabled={exportingSchool === school.schoolId}
+                          className="px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-slate-600 hover:text-primary-600 hover:border-primary-200 transition-all text-xs font-bold inline-flex items-center gap-2 group/btn active:scale-95 disabled:opacity-50"
+                          title="Download Excel Report"
+                        >
+                          {exportingSchool === school.schoolId ? (
+                            <div className="w-3 h-3 border-2 border-primary-200 border-t-primary-600 rounded-full animate-spin" />
+                          ) : (
+                            <Download size={14} className="text-slate-400 group-hover/btn:text-primary-500 transition-colors" />
+                          )}
+                          Report
+                        </button>
                       </td>
                     </tr>
                   );

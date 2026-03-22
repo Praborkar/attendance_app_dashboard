@@ -75,6 +75,11 @@ const TeacherModal = ({ isOpen, onClose, onSuccess, initialData = null }) => {
       return;
     }
 
+    if (formData.mobileNo.length !== 10) {
+      setError('Mobile Number must be exactly 10 digits.');
+      return;
+    }
+
     setLoading(true);
     setError('');
 
