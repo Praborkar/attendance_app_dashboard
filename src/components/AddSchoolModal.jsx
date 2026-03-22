@@ -58,11 +58,11 @@ const AddSchoolModal = ({ isOpen, onClose, onSuccess, initialData = null }) => {
 
     try {
       if (initialData) {
-        console.log(`[DEBUG] Attempting PUT to /schools/${initialData.schoolId}`, formData);
-        await api.put(`/schools/${initialData.schoolId}`, formData);
+        console.log(`[DEBUG] Attempting PUT to /admin/schools/${initialData.schoolId}`, formData);
+        await api.put(`/admin/schools/${initialData.schoolId}`, formData);
       } else {
-        console.log('[DEBUG] Attempting POST to /schools', formData);
-        await api.post('/schools', formData);
+        console.log('[DEBUG] Attempting POST to /admin/schools', formData);
+        await api.post('/admin/schools', formData);
       }
       onSuccess(initialData ? 'School updated successfully' : 'School registered successfully');
       onClose();
