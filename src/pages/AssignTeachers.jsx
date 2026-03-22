@@ -79,7 +79,7 @@ const AssignTeachers = () => {
       setError('');
 
       const [assignedRes, unassignedRes] = await Promise.all([
-        api.get(`/admin/schools/${schoolId}/teachers`),
+        api.get(`/admin/teachers/by-school/${schoolId}`),
         api.get('/admin/teachers/unassigned')
       ]);
 
@@ -102,7 +102,7 @@ const AssignTeachers = () => {
       setError('');
       setSuccess('');
 
-      await api.post(`/admin/schools/${selectedSchool}/assign-teacher`, { teacherId: teacher.id });
+      await api.post(`/admin/teachers/assign-to-school/${selectedSchool}`, { teacherId: teacher.id });
 
       const schoolName = schools.find(s => s.schoolId === selectedSchool)?.name || 'School';
       setSuccess(`Assigned ${teacher.name} to ${schoolName}`);
@@ -128,7 +128,7 @@ const AssignTeachers = () => {
       setError('');
       setSuccess('');
 
-      await api.post(`/admin/schools/${selectedSchool}/unassign-teacher`, { teacherId: teacherToUnassign.id });
+      await api.post(`/admin/teachers/unassign-from-school/${selectedSchool}`, { teacherId: teacherToUnassign.id });
 
       const schoolName = schools.find(s => s.schoolId === selectedSchool)?.name || 'School';
       setSuccess(`Removed ${teacherToUnassign.name} from ${schoolName}`);

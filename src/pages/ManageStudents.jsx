@@ -107,7 +107,7 @@ const ManageStudents = () => {
       setLoadingStudents(true);
       setError('');
 
-      const res = await api.get(`/admin/schools/${schoolId}/students`);
+      const res = await api.get(`/admin/students/by-school/${schoolId}`);
       setStudents(res.data || []);
       setSearchQuery('');
     } catch (err) {
@@ -133,7 +133,7 @@ const ManageStudents = () => {
     try {
       setTransferLoading(true);
       setError('');
-      await api.put(`/admin/schools/students/${studentToTransfer.studentId}/transfer`, {
+      await api.put(`/admin/students/${studentToTransfer.studentId}/transfer`, {
         newSchoolId: transferSchoolId
       });
       setSuccess(`${studentToTransfer.name} transferred successfully!`);
@@ -162,7 +162,7 @@ const ManageStudents = () => {
     try {
       setEditLoading(true);
       setError('');
-      await api.put(`/admin/schools/students/${studentToEdit.studentId}`, editForm);
+      await api.put(`/admin/students/${studentToEdit.studentId}`, editForm);
       setSuccess(`${editForm.name} updated successfully!`);
       setShowEditModal(false);
       fetchStudents(selectedSchool);
@@ -183,7 +183,7 @@ const ManageStudents = () => {
     try {
       setDeleteLoading(true);
       setError('');
-      await api.delete(`/admin/schools/students/${studentToDelete.studentId}`);
+      await api.delete(`/admin/students/${studentToDelete.studentId}`);
       setSuccess(`${studentToDelete.name} removed successfully.`);
       setShowDeleteModal(false);
       fetchStudents(selectedSchool);
@@ -210,7 +210,7 @@ const ManageStudents = () => {
       setError('');
       const formData = new FormData();
       formData.append('file', bulkFile);
-      const res = await api.post('/admin/schools/students/bulk-upload', formData, {
+      const res = await api.post('/admin/students/bulk-upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       setSuccess(res.data || 'Students uploaded successfully!');
