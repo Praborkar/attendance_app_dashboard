@@ -13,15 +13,16 @@ const DashboardOverview = () => {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
 
   useEffect(() => {
     fetchStats();
-  }, []);
+  }, [selectedDate]);
 
   const fetchStats = async () => {
     try {
       setLoading(true);
-      const res = await api.get('/dashboard/admin');
+      const res = await api.get(`/dashboard/admin?date=${selectedDate}`);
       if (res.data) {
         setStats({
           totalSchools: res.data.totalSchools || 0,
@@ -160,12 +161,24 @@ const DashboardOverview = () => {
             <h2 className="font-bold text-slate-800 tracking-tight">Today's Attendance Snapshot</h2>
             <p className="text-xs text-slate-500 mt-0.5">Summary of presence across all registered schools</p>
           </div>
-          <button 
-            onClick={fetchStats}
-            className="text-primary-600 hover:text-primary-700 text-xs font-bold flex items-center gap-1.5 transition-colors"
-          >
-            Refresh Data
-          </button>
+          <div className="flex items-center gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Viewing Data For:</span>
+              <input 
+                type="date" 
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+                className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all"
+              />
+            </div>
+            <button 
+              onClick={fetchStats}
+              className="p-2 text-slate-400 hover:text-primary-600 hover:bg-slate-50 rounded-lg transition-all"
+              title="Refresh Data"
+            >
+              <Users size={18} />
+            </button>
+          </div>
         </div>
 
         <div className="overflow-x-auto">
