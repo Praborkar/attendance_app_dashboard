@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://3.6.233.182:8080/api', // Point to remote backend
+  baseURL: 'https://3.6.233.182:8080/api', // Point to remote backend
   headers: {
     'Content-Type': 'application/json',
   },
