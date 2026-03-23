@@ -1,15 +1,13 @@
+cat > src/api/axiosConfig.js << 'EOF'
 import axios from 'axios';
 
 const api = axios.create({
-<<<<<<< HEAD
-  baseURL: 'https://3.6.233.182:8080/api', // Point to remote backend
-=======
-  baseURL: '/api', // ✅ No more IP address
->>>>>>> 020f085 (fix: use vercel rewrite to proxy backend API)
+  baseURL: '/api',
   headers: {
     'Content-Type': 'application/json',
   },
 });
+
 // Add a request interceptor to attach JWT token
 api.interceptors.request.use(
   (config) => {
@@ -40,3 +38,4 @@ api.interceptors.response.use(
 );
 
 export default api;
+EOF
